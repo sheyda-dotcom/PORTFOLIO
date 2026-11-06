@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<base target="portfolioFrame">
+<title>About Me | Sheyda Palpal</title>
+
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+/* ---- About page layout: fixed right under the nav, fits one screen, no scrolling ---- */
+html, body { height: 100%; overflow: hidden; margin: 0; }
+
+.site-nav {
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  z-index: 60 !important;
+}
+
+/* The whole page is pinned between the nav and the bottom of the screen */
+.ab-page {
+  position: fixed;
+  top: 88px; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 10vw 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.ab-page .about-heading {
+  position: static !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left;
+}
+.ab-page .about-heading h1 { margin: 0 !important; font-size: clamp(2.4rem, 3.6vw, 4rem); line-height: 1.1; }
+.ab-page .about-heading p { margin: 0.4rem 0 0 !important; }
+
+.ab-card {
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.5rem, 4vw, 5rem);
+  align-items: center;
+  padding: clamp(1.2rem, 2.2vw, 2.6rem);
+  border-radius: 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(22, 0, 8, 0.55);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  color: #fff;
+}
+
+/* 1. circle picture + your original contact buttons */
+.ab-side { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+.ab-photo {
+  width: min(25vw, 40svh);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid rgba(255, 77, 99, 0.55);
+  box-shadow: 0 0 40px rgba(255, 40, 70, 0.3);
+}
+.ab-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+/* only keeps the buttons in a row under the photo; your own button styling is untouched */
+.ab-side .about-socials { position: static; transform: none; margin: 0; display: flex; gap: 0.8rem; justify-content: center; }
+
+/* 2. name + personal info */
+.ab-info { text-align: left; }
+.ab-info h2 { margin: 0; font-size: clamp(1.3rem, 2vw, 2.2rem); line-height: 1.15; font-weight: 600; }
+.ab-info h2 span { display: block; font-size: clamp(2.4rem, 4.2vw, 5rem); font-weight: 800; line-height: 1.02; color: #ff4d63; }
+.ab-details { margin-top: 1.4rem; display: grid; gap: 0.9rem; }
+.ab-detail span { display: block; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); }
+.ab-detail p { margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 700; }
+
+/* 3. paragraph (justified) */
+.ab-text p { margin: 0; font-size: clamp(0.95rem, 1.15vw, 1.25rem); line-height: 1.75; color: rgba(255, 255, 255, 0.9); text-align: justify; text-justify: inter-word; }
+
+@media (max-width: 900px) {
+  .ab-page { top: 76px; padding: 0 1rem 84px; gap: 0.6rem; }
+  .ab-page .about-heading h1 { font-size: 1.8rem; }
+  .ab-card { grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem 1rem; padding: 1rem; border-radius: 1.4rem; align-items: center; }
+  .ab-photo { width: min(34vw, 18svh); }
+  .ab-side { gap: 0.6rem; }
+  .ab-info h2 { font-size: 1rem; }
+  .ab-info h2 span { font-size: 1.6rem; }
+  .ab-details { margin-top: 0.5rem; gap: 0.4rem; }
+  .ab-detail span { font-size: 0.7rem; }
+  .ab-detail p { font-size: 0.85rem; }
+  .ab-text { grid-column: 1 / -1; }
+  .ab-text p { font-size: 0.82rem; line-height: 1.5; }
+}
+/* ---- Spacing and colors refinement (desktop only) ---- */
+@media (min-width: 901px) {
+  /* photo, info and paragraph now share the space evenly, so the paragraph sits closer */
+  .ab-card {
+    grid-template-columns: auto clamp(11rem, 16vw, 24rem) clamp(16rem, 26vw, 40rem);
+    justify-content: space-evenly;
+    column-gap: 0;
+  }
+
+  /* personal info: softer, in the red theme, and the same style as your tagline */
+  .ab-detail span {
+    font-family: ui-monospace, "Courier New", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 107, 129, 0.85);
+  }
+  .ab-detail p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 214, 221, 0.8);
+  }
+
+  /* paragraph slightly bigger */
+  .ab-text p {
+    font-size: clamp(1.05rem, 1.3vw, 1.4rem);
+    line-height: 1.8;
+  }
+}
+/* paragraph: no justify, first line indented */
+.ab-text p {
+  text-align: left;
+}
+</style>
+</head>
+<body>
+<div class="ambient-light light-one"></div>
+<div class="ambient-light light-two"></div>
+<div class="grid-overlay"></div>
+<div class="cursor-light"></div>
+
+<header class="site-nav">
+    <a class="brand" href="index.html">Sheyda Palpal</a>
+
+    <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a class="active" href="about.html">About Me</a>
+    <a href="education.html">Education</a>
+    <a href="family.html">My Family</a>
+    </nav>
+</header>
+
+<main class="ab-page">
+
+    <div class="about-heading">
+        <h1>About Me</h1>
+        <p>✧ Bridging business with technical execution ✧</p>
+    </div>
+
+    <section class="ab-card">
+
+        <!-- 1. picture (left) + original contact buttons -->
+        <div class="ab-side">
+            <div class="ab-photo">
+                <img src="assets/profile.png" alt="Sheyda Palpal" />
+            </div>
+
+            <div class="about-socials">
+                <a href="mailto:palpalsheyda@gmail.com" title="Email Me" aria-label="Email Me">
+                    <img src="assets/email.png" alt="" />
+                </a>
+
+                <a href="https://github.com/sheyda-dotcom" target="_blank" title="GitHub" aria-label="Open GitHub">
+                    <img src="assets/github.png" alt="" />
+                </a>
+
+                <a href="https://www.facebook.com/sheyda.08" target="_blank" title="Facebook" aria-label="Open Facebook">
+                    <img src="assets/facebook.png" alt="" />
+                </a>
+
+                <a href="https://api.whatsapp.com/send?phone=639560072978" target="_blank" title="WhatsApp" aria-label="Message me on WhatsApp">
+                    <img src="assets/whatsapp.png" alt="" />
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. name + personal info (middle) -->
+        <div class="ab-info">
+            <h2>Hello, I’m<br /><span>Sheyda Palpal</span></h2>
+
+            <div class="ab-details">
+                <div class="ab-detail">
+                    <span>Date of Birth</span>
+                    <p>April 16, 2008</p>
+                </div>
+                <div class="ab-detail">
+                    <span>Age</span>
+                    <p>18 years old</p>
+                </div>
+                <div class="ab-detail">
+                    <span>Location</span>
+                    <p>Baguio City, Philippines</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. paragraph (right) -->
+        <div class="ab-text">
+            <p>
+                I am a first-year Bachelor of Science in Computer Science student at the University of the Cordilleras with an interest in programming, technology, and problem-solving. With a background in Accountancy, Business, and Management (ABM), I bring both technical and business perspectives to my work. I enjoy developing practical projects, with a long-term goal of specializing in Data Engineering.
+            </p>
+        </div>
+
+    </section>
+</main>
+
+<a class="previous-page" href="index.html">← Home</a>
+
+<a class="next-page" href="education.html">
+    Next
+    <span>→</span>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>

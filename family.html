@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head><base target="portfolioFrame">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Family | Sheyda Palpal</title>
+
+<link rel="stylesheet" href="styles.css" />
+
+
+
+<style>
+/* ===================== GALLERY ONLY ===================== */
+
+/* one screen, no scrolling */
+html:has(.gallery-page),
+html:has(.gallery-page) body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.gallery-page {
+--g-ease: cubic-bezier(.2, .7, .2, 1);
+  --g-cap-h: clamp(118px, 22vh, 168px);          /* fixed caption area */
+  position: fixed;                 /* always exactly the screen, whatever sits above it */
+inset: 0;
+z-index: 1;
+margin: 0;
+box-sizing: border-box;
+height: auto;
+min-height: 0;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+align-items: stretch;
+padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
+  pointer-events: none;            /* empty areas let clicks through to the nav */
+}
+.gallery-page > * { pointer-events: auto; }
+
+/* ---------- heading row ---------- */
+.g-head {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+/* reuses your existing heading style so the font matches every page */
+.gallery-page .g-head .projects-heading {
+  margin: 0;
+  max-width: none;
+  text-align: left;
+}
+
+.g-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  color: #ffd3d7;
+  background: rgba(255, 45, 61, .12);
+  border: 1px solid rgba(255, 80, 90, .4);
+  backdrop-filter: blur(5px);
+  transition: background .25s, color .25s, box-shadow .25s, transform .25s;
+}
+.g-btn:hover {
+  color: #fff;
+  background: #ff2d3d;
+  box-shadow: 0 8px 26px rgba(255, 45, 61, .45);
+  transform: translateY(-2px);
+}
+
+/* ---------- stage: takes whatever height is left ---------- */
+.g-stage {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 120px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 6px auto 0;
+  perspective: 1500px;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+}
+.g-stage::after {                 /* red light on the "floor" */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: min(640px, 70%);
+  height: 44px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(255, 45, 61, .45), transparent 70%);
+  filter: blur(16px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.g-slide {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;                                     /* start: stacked, then fans out */
+  transform: translate(-50%, -50%) scale(.6);
+  transition: transform .9s var(--g-ease), filter .9s var(--g-ease), opacity .9s var(--g-ease);
+  will-change: transform;
+}
+.g-stage.no-anim .g-slide { transition: none; }
+
+/* the frame hugs the image: its size comes from the image's own ratio */
+.g-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .02));
+  border: 1px solid rgba(255, 80, 90, .28);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+  transition: border-color .9s, box-shadow .9s;
+}
+.g-slide.is-active .g-frame {
+  border-color: rgba(255, 90, 100, .75);
+  box-shadow: 0 0 0 1px rgba(255, 45, 61, .25),
+              0 24px 70px rgba(255, 45, 61, .38),
+              0 0 120px rgba(255, 45, 61, .16);
+}
+.g-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;            /* never crops or stretches your image */
+  border-radius: 12px;
+  background: rgba(0, 0, 0, .35);
+  pointer-events: none;
+}
+
+/* ---------- "put your image here" marker ---------- */
+.g-ph {
+  display: none;
+  position: absolute;
+  inset: 6px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  text-align: center;
+  color: #ffb3b9;
+  border-radius: 12px;
+  border: 1.5px dashed rgba(255, 110, 120, .55);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 45, 61, .07) 0 12px, transparent 12px 24px),
+    rgba(20, 4, 8, .72);
+}
+.g-ph b    { font-size: 1rem; letter-spacing: .12em; }
+.g-ph span { font: .68rem/1.3 Consolas, monospace; opacity: .75; word-break: break-all; }
+.g-slide.is-empty .g-ph { display: flex; }
+.g-slide.is-empty img   { display: none; }
+
+.g-slide figcaption { display: none; }       /* shown in the caption panel instead */
+
+/* ---------- caption panel: fixed height, text can never push the page ---------- */
+.g-caption {
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
+  height: var(--g-cap-h);
+  margin: 6px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+.g-caption h2,
+.g-caption p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.g-caption h2 {
+  -webkit-line-clamp: 2;
+  margin: 0 0 6px;
+  font-size: clamp(1rem, 2.3vh, 1.3rem);
+  line-height: 1.2;
+}
+.g-caption p {
+  -webkit-line-clamp: 3;
+  margin: 0 auto 8px;
+  font-size: clamp(.78rem, 1.75vh, .92rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .68);
+}
+.g-link {
+  display: inline-block;
+  padding-bottom: 2px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 80, 90, .6);
+  transition: color .25s, border-color .25s;
+}
+.g-link:hover { color: #ff6b78; border-color: #ff6b78; }
+.g-link[hidden] { display: none; }
+
+.g-caption.swap > * { animation: g-swap .65s var(--g-ease) both; }
+.g-caption.swap > :nth-child(2) { animation-delay: .06s; }
+.g-caption.swap > :nth-child(3) { animation-delay: .12s; }
+@keyframes g-swap {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- dots ---------- */
+.g-dots { flex: none; display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
+.g-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, .25);
+  cursor: pointer;
+  transition: width .4s var(--g-ease), background .3s;
+}
+.g-dots button:hover { background: rgba(255, 255, 255, .5); }
+.g-dots button.on    { width: 26px; background: #ff2d3d; box-shadow: 0 0 12px rgba(255, 45, 61, .7); }
+.g-dots button:focus-visible,
+.g-slide:focus-visible { outline: 2px solid #ff6b78; outline-offset: 3px; }
+
+/* ---------- small screens: drop the extras so everything still fits ---------- */
+@media (max-width: 700px) {
+  .gallery-page .g-head p { display: none; }
+  .g-btn { padding: 7px 13px; font-size: .72rem; }
+}
+@media (max-height: 560px) {
+  .gallery-page .g-head p,
+  .gallery-page .g-head .system { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .g-slide { transition-duration: .01s; }
+  .g-caption.swap > * { animation: none; }
+}
+</style>
+</head>
+
+<body>
+<!-- same moving lights as every other page -->
+<div class="ambient-light light-one"></div>
+<div class="ambient-light light-two"></div>
+<div class="grid-overlay"></div>
+<div class="cursor-light"></div>
+
+<header class="site-nav">
+  <a class="brand" href="index.html">Sheyda Palpal</a>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Me</a>
+    <a href="education.html">Educational Attainment</a>
+    <a class="active" href="family.html">My Family</a>
+  </nav>
+</header>
+
+<main class="gallery-page">
+
+  <div class="g-head">
+    <div class="projects-heading">
+    <span class="system">Gallery · Highlights</span>
+    <h1>My </span>Family</span></h1>
+    <p>A collection of moments, certificates, and achievements from my journey.</p>
+    </div>
+
+    <a class="g-btn" href="assets/sheyda_palpal_resume.pdf" target="_blank">View Resume ↗</a>
+</div>
+
+<!-- ================= CAROUSEL ================= -->
+<section class="g-stage" aria-roledescription="carousel" aria-label="Gallery and achievements">
+
+    <!-- ═══════════ SLIDE 1 ═══════════ -->
+    <figure class="g-slide">
+    <div class="g-frame">
+        <!-- ▼ IMAGE 1 — change the file name (any size or shape works) -->
+        <img src="assets/image-1.jpg" alt="Describe image 1" />
+        <div class="g-ph"><b>IMAGE 1</b><span>assets/image-1.jpg</span></div>
+    </div>
+    <figcaption>
+        <!-- ▼ CAPTION 1 — title, then text -->
+        <h2>Mother's Love</h2>
+        <p>A constant source of love, encouragement, and support throughout my journey</p>
+    </figcaption>
+    </figure>
+
+    <!-- ═══════════ SLIDE 2 ═══════════ -->
+    <figure class="g-slide">
+    <div class="g-frame">
+        <!-- ▼ IMAGE 2 -->
+        <img src="assets/image-2.jpg" alt="Describe image 2" />
+        <div class="g-ph"><b>IMAGE 2</b><span>assets/image-2.jpg</span></div>
+    </div>
+    <figcaption>
+        <!-- ▼ CAPTION 2 -->
+        <h2>Father's Pride</h2>
+        <p> A meaningful moment of gratitude and appreciation for the guidance and sacrifices that helped shape me</p>
+    </figcaption>
+    </figure>
+
+    <!-- ═══════════ SLIDE 3 ═══════════ -->
+    <figure class="g-slide">
+    <div class="g-frame">
+        <!-- ▼ IMAGE 3 -->
+        <img src="assets/image-3.jpg" alt="Describe image 3" />
+        <div class="g-ph"><b>IMAGE 3</b><span>assets/image-3.jpg</span></div>
+    </div>
+    <figcaption>
+        <!-- ▼ CAPTION 3 -->
+        <h2>Graduation Day</h2>
+        <p>Graduated with high honors under the Accountancy, Business, and Management strand and received the Outstanding Performance During Work Immersion Award. Combining a foundation in business, accounting, and management with developing technical skills in Computer Science, allowing me to contribute to both technical and business-oriented tasks.</p>
+    </figcaption>
+    </figure>
+
+    <!-- ═══════════ SLIDE 4 ═══════════ -->
+    <figure class="g-slide">
+    <div class="g-frame">
+        <!-- ▼ IMAGE 4 -->
+        <img src="assets/image-4.jpg" alt="Describe image 4" />
+        <div class="g-ph"><b>IMAGE 4</b><span>assets/image-4.jpg</span></div>
+    </div>
+    <figcaption>
+        <!-- ▼ CAPTION 4 -->
+        <h2>Junior High School Moving Up</h2>
+        <p>Finished with High Honors, Best in MUSIC, and Best in ARTS</p>
+    </figcaption>
+    </figure>
+
+    <!-- ═══════════ SLIDE 5 ═══════════ -->
+    <figure class="g-slide">
+    <div class="g-frame">
+        <!-- ▼ IMAGE 5 -->
+        <img src="assets/image-5.jpg" alt="Describe image 5" />
+        <div class="g-ph"><b>IMAGE 5</b><span>assets/image-5.jpg</span></div>
+    </div>
+    <figcaption>
+        <!-- ▼ CAPTION 5 -->
+        <h2>Artistic Recognition</h2>
+        <p>Selected by the school to create an original painting in recognition of my previous artworks</p>
+    </figcaption>
+    </figure>
+
+
+</section>
+
+<!-- caption of the active slide appears here -->
+<div class="g-caption" aria-live="polite">
+    <h2></h2>
+    <p></p>
+    <a class="g-link" href="#" target="_blank" hidden>View Image →</a>
+</div>
+
+<div class="g-dots" role="tablist" aria-label="Choose a slide"></div>
+</main>
+
+<a class="previous-page" href="projects.html">← Projects</a>
+<script src="script.js"></script>
+
+<script>
+(() => {
+  const stage  = document.querySelector('.g-stage');
+  const slides = [...stage.querySelectorAll('.g-slide')];
+  const cap    = document.querySelector('.g-caption');
+  const capH   = cap.querySelector('h2');
+  const capP   = cap.querySelector('p');
+  const capA   = cap.querySelector('.g-link');
+  const dotBox = document.querySelector('.g-dots');
+  const n      = slides.length;
+  const PAD    = 12;                 // frame padding (6px each side)
+
+  let index = 0, ready = false, dragged = false;
+
+  /* ---------- dots ---------- */
+  const dots = slides.map((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Show slide ' + (i + 1));
+    b.addEventListener('click', () => go(i));
+    dotBox.appendChild(b);
+    return b;
+  });
+
+  /* ---------- size every frame to the space available + its own image ratio ---------- */
+  function sizeAll() {
+    const R = parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
+    const baseH = Math.max(100, Math.min(640 * R, stage.clientHeight - 20 * R));
+    const maxW  = Math.min(stage.clientWidth * (innerWidth < 700 ? 0.78 : 0.64), 960 * R);
+
+    slides.forEach((s) => {
+      const ar = +s.dataset.ar || 1.6;
+      let ih = baseH - PAD, iw = ih * ar;
+      if (iw > maxW) { iw = maxW; ih = iw / ar; }       // very wide image → shrink, keep ratio
+      s.style.width  = (iw + PAD) + 'px';
+      s.style.height = (ih + PAD) + 'px';
+    });
+  }
+
+  /* ---------- 3D layout ---------- */
+  const scaleOf = (a) => Math.max(0.5, 1 - 0.2 * a);
+
+  function layout(instant) {
+    if (instant) stage.classList.add('no-anim');
+
+    const items = slides.map((s, i) => {
+      let d = i - index;
+      if (d > n / 2) d -= n; else if (d < -n / 2) d += n;
+      return { s, d, a: Math.abs(d) };
+    }).sort((p, q) => p.a - q.a);
+
+    // stack neighbours outward, each tucked partly behind the one before it
+    let edgeR = items[0].s.offsetWidth / 2;
+    let edgeL = -edgeR;
+
+    items.forEach((o) => {
+      let x = 0;
+      if (o.a > 0) {
+        const w  = o.s.offsetWidth * scaleOf(o.a);
+        const ov = o.a === 1 ? 0.34 : 0.5;
+        if (o.d > 0) { x = edgeR - w * ov + w / 2; edgeR = x + w / 2; }
+        else         { x = edgeL + w * ov - w / 2; edgeL = x - w / 2; }
+      }
+
+      const rot    = o.a === 0 ? 0 : (o.d > 0 ? -1 : 1) * (36 + (o.a - 1) * 6);
+      const hidden = o.a > 2.5;
+      const dim    = o.a === 0 ? 1 : Math.max(0.28, 0.62 - 0.2 * (o.a - 1));
+
+      // a card that jumps from one side to the other must not fly across the stage
+      if (o.s._d !== undefined && Math.abs(o.d - o.s._d) > 1.5) {
+        o.s.style.transition = 'none';
+        void o.s.offsetWidth;
+        o.s.style.transition = '';
+      }
+      o.s._d = o.d;
+
+      o.s.style.transform =
+        `translate(-50%, -50%) translate3d(${x}px, 0, ${-o.a * 90}px) rotateY(${rot}deg) scale(${scaleOf(o.a)})`;
+      o.s.style.opacity       = hidden ? 0 : 1;
+      o.s.style.filter        = `brightness(${dim}) saturate(${o.a ? 0.85 : 1})`;
+      o.s.style.zIndex        = 10 - o.a;
+      o.s.style.pointerEvents = hidden ? 'none' : 'auto';
+      o.s.classList.toggle('is-active', o.a === 0);
+      o.s.setAttribute('aria-hidden', o.a === 0 ? 'false' : 'true');
+    });
+
+    if (instant) { void stage.offsetWidth; stage.classList.remove('no-anim'); }
+  }
+
+  /* ---------- caption ---------- */
+  function showCaption() {
+    const s   = slides[index];
+    const img = s.querySelector('img');
+    capH.textContent = s.querySelector('figcaption h2').textContent;
+    capP.textContent = s.querySelector('figcaption p').textContent;
+
+    const href = s.dataset.href || (s.classList.contains('is-empty') ? '' : img.currentSrc || img.src);
+    capA.hidden = !href;
+    if (href) capA.href = href;
+
+    cap.classList.remove('swap');
+    void cap.offsetWidth;
+    cap.classList.add('swap');
+
+    dots.forEach((d, i) => d.classList.toggle('on', i === index));
+  }
+
+  /* slides change ONLY when you click, swipe, press ← → or use the dots (no autoplay) */
+  function go(i) {
+    index = (i + n) % n;
+    layout(false);
+    showCaption();
+  }
+
+  /* ---------- click, keys, swipe ---------- */
+  slides.forEach((s, i) => {
+    s.tabIndex = 0;
+    s.addEventListener('click', () => { if (!dragged) go(i); });
+    s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(i); } });
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') go(index + 1);
+    if (e.key === 'ArrowLeft')  go(index - 1);
+  });
+
+  let startX = 0;
+  stage.addEventListener('pointerdown', (e) => { startX = e.clientX; dragged = false; });
+  stage.addEventListener('pointerup', (e) => {
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 50) { dragged = true; go(index + (dx < 0 ? 1 : -1)); }
+  });
+
+  /* ---------- images: read real size, show marker if missing ---------- */
+  slides.forEach((s) => {
+    const img = s.querySelector('img');
+    const done = () => {
+      if (img.naturalWidth) { s.dataset.ar = img.naturalWidth / img.naturalHeight; s.classList.remove('is-empty'); }
+      else { s.dataset.ar = 1.6; s.classList.add('is-empty'); }
+      sizeAll();
+      if (ready) { layout(true); showCaption(); }
+    };
+    if (img.complete) done();
+    else { img.addEventListener('load', done); img.addEventListener('error', done); }
+  });
+
+  /* re-fit whenever the available space changes (resize, zoom, fonts loading) */
+  new ResizeObserver(() => { sizeAll(); if (ready) layout(true); }).observe(stage);
+
+  /* ---------- start: fan out from the middle ---------- */
+  sizeAll();
+  showCaption();
+  setTimeout(() => {
+    ready = true;
+    layout(false);
+  }, 250);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base target="portfolioFrame">
+  <title>Sheyda Palpal | Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* ---- Home layout: centered card, big photo card, glowing name strip, no scrolling ---- */
+    html, body { height: 100%; overflow: hidden; margin: 0; }
+
+    .site-nav {
+      position: fixed !important;
+      top: 0 !important; left: 0 !important; right: 0 !important;
+      z-index: 60 !important;
+    }
+
+    /* Glowing name strip moving in the background */
+    .name-strip {
+      position: fixed;
+      left: 0; right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      overflow: hidden;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+              mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    }
+    .name-track {
+      display: flex;
+      width: max-content;
+      animation: name-slide 40s linear infinite;
+      filter: drop-shadow(0 0 22px rgba(255, 40, 70, 0.65)) drop-shadow(0 0 60px rgba(255, 40, 70, 0.35));
+    }
+    .name-group { display: flex; flex-shrink: 0; }
+    .name-group span {
+      padding-right: 0.5em;
+      font-size: clamp(7rem, 30vh, 18rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      color: rgba(255, 60, 90, 0.16);
+      -webkit-text-stroke: 2px rgba(255, 90, 115, 0.6);
+    }
+    @keyframes name-slide { to { transform: translateX(-50%); } }
+
+    /* The page container centers the card, so the space is equal on the left and right */
+    html body main.home {
+      position: relative !important;
+      z-index: 2 !important;
+      box-sizing: border-box !important;
+      height: 100svh !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      padding: 104px 0 112px !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: stretch !important;
+    }
+
+    html body main.home section.hero-card {
+      box-sizing: border-box !important;
+      flex: 0 0 auto !important;
+      width: 84vw !important;
+      max-width: none !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr) !important;
+      gap: clamp(1rem, 2vw, 2.5rem) !important;
+      align-items: stretch !important;
+    }
+    html body main.home .intro {
+      align-self: center !important;
+      min-width: 0 !important;
+    }
+
+    /* The photo card takes all the empty space */
+    html body main.home .visual {
+      height: 100% !important;
+      min-height: 0 !important;
+      width: 100% !important;
+      margin: 0 !important;
+      display: flex !important;
+      align-items: stretch !important;
+    }
+    html body main.home .code-card {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+    html body main.home .code-bar { flex: 0 0 auto !important; }
+    html body main.home .profile-wrap {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      width: 100% !important;
+      height: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    html body main.home .profile-wrap img {
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: contain !important;
+      object-position: center bottom !important;
+      transform: scale(1.12) !important;
+      transform-origin: center bottom !important;
+    }
+
+    /* Phones */
+    @media (max-width: 900px) {
+      html body main.home { padding: 84px 1rem 88px !important; }
+      html body main.home section.hero-card {
+        width: 100% !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto minmax(0, 1fr) !important;
+        gap: 0.8rem !important;
+      }
+      html body main.home .intro h1 { font-size: clamp(2.2rem, 11vw, 4rem) !important; line-height: 1 !important; }
+      html body main.home .intro p { margin-top: 0.4rem !important; }
+      html body main.home .intro .status { margin-top: 0.6rem !important; }
+      html body main.home .intro .quick-links { margin-top: 0.8rem !important; }
+      .name-group span { font-size: 22vh; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Moving red background lights -->
+  <div class="ambient-light light-one"></div>
+  <div class="ambient-light light-two"></div>
+  <div class="grid-overlay"></div>
+  <div class="cursor-light"></div>
+
+  <!-- Moving name strip -->
+  <div class="name-strip" aria-hidden="true">
+    <div class="name-track">
+      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
+      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header class="site-nav">
+    <a class="brand" href="index.html">Sheyda Palpal</a>
+
+    <nav class="nav-links">
+    <a class="active" href="index.html">Home</a>
+    <a href="about.html">About Me</a>
+    <a href="education.html">Educational Attainment</a>
+    <a href="family.html">My Family</a>
+    </nav>
+  </header>
+
+  <!-- Home content -->
+  <main class="home">
+    <section class="hero-card">
+      <div class="intro">
+        <span class="system">System Ready · Portfolio 2026</span>
+
+        <h1>
+        SHEYDA<br><span>PALPAL</span></h1>
+        <p>
+        Aspiring Data Engineer
+        </p>
+
+        <div class="status">
+          <b>●</b>
+          Available for opportunities
+        </div>
+
+        <div class="quick-links">
+          <a href="about.html">contact</a>
+
+          <a href="assets/sheyda_palpal_resume.pdf" target="_blank">
+            ◉ View Resume
+          </a>
+        </div>
+      </div>
+
+      <div class="visual">
+        <div class="code-card">
+          <div class="code-bar">
+            <span class="dots">● ● ●</span>
+            <span>sheyda.profile</span>
+          </div>
+
+          <div class="profile-wrap">
+            <img src="assets/profile.png" alt="Sheyda Palpal" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a class="next-page" href="about.html">
+    Next
+    <span>→</span>
+  </a>
+
+
+<!-- JavaScript -->
+<script src="script.js"></script>
+
+</body>
+</html>
