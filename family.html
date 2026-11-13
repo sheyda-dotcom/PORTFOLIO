@@ -270,7 +270,7 @@ padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
 
   <nav class="nav-links">
     <a href="index.html">Home</a>
-    <a href="about.html">About Me</a>
+    <a href="about.html">Personal Information</a>
     <a href="achievements.html">Achievements</a>
     <a class="active" href="family.html">Family & Friends</a>
   </nav>
@@ -360,6 +360,22 @@ padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
 
 <div class="g-dots" role="tablist" aria-label="Choose a slide"></div>
 </main>
+
+<!-- contact icons, bottom right (same icons as the About page) -->
+<div class="contact-dock about-socials">
+    <a href="mailto:palpalsheyda@gmail.com" title="Email Me" aria-label="Email Me">
+        <img src="assets/email.png" alt="" />
+    </a>
+    <a href="https://github.com/sheyda-dotcom" target="_blank" title="GitHub" aria-label="Open GitHub">
+        <img src="assets/github.png" alt="" />
+    </a>
+    <a href="https://www.facebook.com/sheyda.08" target="_blank" title="Facebook" aria-label="Open Facebook">
+        <img src="assets/facebook.png" alt="" />
+    </a>
+    <a href="https://api.whatsapp.com/send?phone=639560072978" target="_blank" title="WhatsApp" aria-label="Message me on WhatsApp">
+        <img src="assets/whatsapp.png" alt="" />
+    </a>
+</div>
 
 <a class="previous-page" href="achievements.html">← Achievements</a>
 <script src="script.js"></script>
@@ -481,7 +497,6 @@ padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
   /* ---------- click, keys, swipe ---------- */
   slides.forEach((s, i) => {
     s.tabIndex = 0;
-    s.addEventListener('click', () => { if (!dragged) go(i); });
     s.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(i); } });
   });
   addEventListener('keydown', (e) => {
@@ -490,7 +505,17 @@ padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
   });
 
   let startX = 0;
-  stage.addEventListener('pointerdown', (e) => { startX = e.clientX; dragged = false; });
+  document.addEventListener('pointerdown', (e) => { startX = e.clientX; dragged = false; });
+
+  /* click anywhere on the left half of the screen = previous, right half = next
+     (clicking a side picture still jumps straight to it) */
+  document.addEventListener('click', (e) => {
+    if (dragged) return;
+    if (e.target.closest('a, button, .site-nav, .g-head, .g-caption, .g-dots, #snd-toggle')) return;
+    const slide = e.target.closest('.g-slide');
+    if (slide && !slide.classList.contains('is-active')) { go(slides.indexOf(slide)); return; }
+    go(index + (e.clientX < innerWidth / 2 ? -1 : 1));
+  });
   stage.addEventListener('pointerup', (e) => {
     const dx = e.clientX - startX;
     if (Math.abs(dx) > 50) { dragged = true; go(index + (dx < 0 ? 1 : -1)); }
@@ -521,5 +546,6 @@ padding: clamp(84px, 11vh, 112px) clamp(16px, 4vw, 64px) clamp(60px, 9vh, 84px);
   }, 250);
 })();
 </script>
+<script src="sounds.js"></script>
 </body>
 </html>
