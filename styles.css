@@ -2892,3 +2892,660 @@ html, body { height: 100%; overflow: hidden; }
   .about-description { grid-column: 1 / -1; }
   .about-description p { font-size: 0.82rem; line-height: 1.5; }
 }
+/* One-screen achievements layout. Uses the colors and type from styles.css. */
+html:has(.achievements-body),
+html:has(.achievements-body) body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.achievements-body {
+  --achievement-nav-height: 5.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: #f8f1f2;
+}
+
+.achievements-body .site-nav {
+  flex: 0 0 var(--achievement-nav-height);
+  width: min(92%, 1500px);
+  height: var(--achievement-nav-height);
+  margin: 0 auto;
+}
+
+.achievements-page {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: min(94%, 1600px);
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0 0 4.5rem;
+}
+
+.achievements-heading {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin: 0 0 clamp(.7rem, 1.6vh, 1.25rem);
+}
+
+.achievements-heading .system {
+  padding: .42rem .7rem;
+  font-size: .58rem;
+}
+
+.achievements-heading h1 {
+  margin: .6rem 0 0;
+  font-size: clamp(2rem, min(4.1vw, 6vh), 4rem);
+  line-height: .98;
+}
+
+.achievements-heading h1 span {
+  color: #d61f3b;
+}
+
+.achievements-heading > p {
+  max-width: 31rem;
+  margin: 0 0 .15rem;
+  color: #cdbbbe;
+  font-size: clamp(.72rem, 1vw, .95rem);
+  line-height: 1.5;
+}
+
+.achievement-columns {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: 1.38fr .8fr .92fr;
+  gap: clamp(.7rem, 1.25vw, 1.2rem);
+  min-height: 0;
+}
+
+.achievement-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(.85rem, 1.35vw, 1.35rem);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 90% 4%, rgba(155, 8, 37, .2), transparent 43%),
+    linear-gradient(145deg, rgba(43, 5, 13, .94), rgba(8, 2, 5, .96));
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 18px;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, .3), inset 0 1px rgba(255, 255, 255, .06);
+  backdrop-filter: blur(14px);
+}
+
+.panel-heading {
+  flex: 0 0 auto;
+  margin-bottom: .8rem;
+}
+
+.panel-index {
+  color: #f27a8b;
+  font: 500 clamp(.52rem, .7vw, .65rem) "DM Mono", monospace;
+  letter-spacing: .14em;
+}
+
+.panel-heading h2 {
+  margin: .38rem 0 0;
+  color: #fff4f5;
+  font-size: clamp(1.05rem, 1.65vw, 1.55rem);
+  line-height: 1.12;
+  letter-spacing: -.04em;
+}
+
+.panel-intro {
+  flex: 0 0 auto;
+  margin: -.1rem 0 .9rem;
+  color: #cdbbbe;
+  font-size: clamp(.65rem, .82vw, .8rem);
+  line-height: 1.55;
+}
+
+.proof-group {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.proof-group + .proof-group {
+  margin-top: .72rem;
+  padding-top: .72rem;
+  border-top: 1px solid rgba(255, 255, 255, .13);
+}
+
+.proof-title {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-bottom: .45rem;
+}
+
+.proof-title h3 {
+  margin: 0;
+  color: #f4dfe2;
+  font-size: clamp(.68rem, .92vw, .88rem);
+  line-height: 1.2;
+}
+
+.proof-title > span {
+  flex: 0 0 auto;
+  color: #d97989;
+  font: 500 .54rem "DM Mono", monospace;
+  letter-spacing: .08em;
+}
+
+.proof-grid {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-rows: minmax(0, 1fr);
+  gap: .5rem;
+  min-height: 0;
+}
+
+.proof-grid-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.proof-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.proof-grid-four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.proof-photo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(102, 16, 34, .8), rgba(16, 5, 9, .96));
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 10px;
+}
+
+.proof-photo::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(180deg, transparent 66%, rgba(5, 2, 4, .38));
+}
+
+.proof-photo img {
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.88) contrast(1.03);
+}
+
+.proof-photo figcaption {
+  z-index: 2;
+  flex: 0 0 auto;
+  padding: .34rem .42rem;
+  color: #f6e7e9;
+  font: 500 clamp(.48rem, .66vw, .62rem) "DM Mono", monospace;
+  letter-spacing: .025em;
+  background: rgba(10, 3, 6, .84);
+  border-top: 1px solid rgba(255, 255, 255, .1);
+}
+
+.proof-photo-feature {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.proof-photo-feature img {
+  object-fit: contain;
+  padding: .55rem;
+}
+
+.proof-stack {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: .7rem;
+  min-height: 0;
+}
+
+.proof-photo-certificate {
+  flex: 1 1 0;
+}
+
+.proof-photo-certificate img {
+  object-fit: contain;
+  padding: .45rem;
+}
+
+.proof-note {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: .7rem;
+  margin-top: .72rem;
+  padding: .65rem .75rem;
+  color: #e5c9ce;
+  font: 500 clamp(.57rem, .7vw, .68rem) "DM Mono", monospace;
+  letter-spacing: .04em;
+  background: rgba(214, 31, 59, .09);
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 9px;
+}
+
+.note-mark {
+  color: #f24b63;
+  font-size: 1.1rem;
+}
+
+@media (min-width: 1100px) and (min-height: 650px) {
+  .academic-panel .proof-group:first-of-type {
+    flex: 1.05 1 0;
+  }
+
+  .academic-panel .proof-group:last-of-type {
+    flex: .95 1 0;
+  }
+}
+
+@media (max-width: 1000px) {
+  .achievements-body {
+    --achievement-nav-height: 5rem;
+  }
+
+  .achievements-body .site-nav {
+    width: calc(100% - 2rem);
+  }
+
+  .achievements-body .nav-links {
+    gap: .7rem;
+  }
+
+  .achievements-body .nav-links a {
+    font-size: .56rem;
+  }
+
+  .achievements-page {
+    width: calc(100% - 2rem);
+    padding-bottom: 3.7rem;
+  }
+
+  .achievement-columns {
+    grid-template-columns: 1.25fr .8fr .9fr;
+    gap: .55rem;
+  }
+
+  .achievement-panel {
+    padding: .72rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .achievements-body {
+    --achievement-nav-height: auto;
+    height: 100dvh;
+  }
+
+  .achievements-body .site-nav {
+    flex-basis: auto;
+    min-height: 4.5rem;
+    padding: .7rem 0;
+  }
+
+  .achievements-body .brand {
+    width: auto;
+    font-size: .62rem;
+  }
+
+  .achievements-body .nav-links {
+    max-width: 72%;
+    gap: .55rem .7rem;
+  }
+
+  .achievements-body .nav-links a {
+    font-size: .5rem;
+  }
+
+  .achievements-page {
+    width: calc(100% - 1.25rem);
+    padding-bottom: 3.2rem;
+  }
+
+  .achievements-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: .35rem;
+    margin-bottom: .55rem;
+  }
+
+  .achievements-heading .system {
+    font-size: .48rem;
+    padding: .32rem .5rem;
+  }
+
+  .achievements-heading h1 {
+    font-size: clamp(1.55rem, 7vw, 2.25rem);
+  }
+
+  .achievements-heading > p {
+    font-size: .62rem;
+  }
+
+  .achievement-columns {
+    grid-template-columns: 1.25fr .8fr .9fr;
+    gap: .35rem;
+  }
+
+  .achievement-panel {
+    padding: .45rem;
+    border-radius: 10px;
+  }
+
+  .panel-heading {
+    margin-bottom: .45rem;
+  }
+
+  .panel-index {
+    font-size: .4rem;
+  }
+
+  .panel-heading h2 {
+    font-size: clamp(.58rem, 2.6vw, .85rem);
+  }
+
+  .panel-intro {
+    font-size: .46rem;
+    line-height: 1.35;
+  }
+
+  .proof-title h3 {
+    font-size: .48rem;
+  }
+
+  .proof-title > span {
+    font-size: .38rem;
+  }
+
+  .proof-grid {
+    gap: .18rem;
+  }
+
+  .proof-grid-three {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+
+  .proof-grid-two {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .proof-photo {
+    border-radius: 5px;
+  }
+
+  .proof-photo figcaption {
+    padding: .18rem .22rem;
+    font-size: .38rem;
+  }
+
+  .proof-note {
+    padding: .3rem;
+    gap: .2rem;
+    font-size: .42rem;
+  }
+
+  .note-mark {
+    font-size: .65rem;
+  }
+
+  .proof-group + .proof-group {
+    margin-top: .35rem;
+    padding-top: .35rem;
+  }
+
+  .proof-stack {
+    gap: .35rem;
+  }
+
+  .next-page,
+  .previous-page {
+    bottom: .45rem;
+    height: 1.9rem;
+    padding: 0 .55rem;
+    font-size: .48rem;
+  }
+
+  .next-page {
+    right: .45rem;
+  }
+
+  .previous-page {
+    left: .45rem;
+  }
+}
+
+@media (max-height: 650px) and (min-width: 701px) {
+  .achievements-body {
+    --achievement-nav-height: 4.2rem;
+  }
+
+  .achievements-heading {
+    margin-bottom: .45rem;
+  }
+
+  .achievements-heading h1 {
+    font-size: clamp(1.65rem, min(3vw, 5vh), 2.8rem);
+  }
+
+  .achievement-panel {
+    padding: .65rem;
+  }
+
+  .panel-heading {
+    margin-bottom: .45rem;
+  }
+
+  .proof-group + .proof-group {
+    margin-top: .45rem;
+    padding-top: .45rem;
+  }
+}
+/* More room for academic proof photos and medal details */
+.achievements-heading {
+  margin-top: -.5rem;
+  margin-bottom: .55rem;
+}
+
+.achievements-heading h1 {
+  margin-top: 0;
+}
+
+.achievement-columns {
+  grid-template-columns: 1.6fr .72fr .82fr;
+}
+
+.academic-panel .proof-group:first-of-type {
+  flex: 1.05 1 0;
+}
+
+.academic-panel .moving-up-group {
+  flex: 1.2 1 0;
+}
+
+.proof-grid-four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.proof-document img {
+  object-fit: contain;
+  padding: .35rem;
+}
+
+.moving-up-photos {
+  flex: 1 1 0;
+  min-height: 5rem;
+}
+
+.medal-list {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .3rem .55rem;
+  margin: .45rem 0 0;
+  padding: .45rem 0 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, .13);
+}
+
+.medal-list li {
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+  min-width: 0;
+  padding: .32rem .4rem;
+  color: #e8d5d8;
+  font-size: clamp(.48rem, .62vw, .62rem);
+  line-height: 1.3;
+  background: rgba(214, 31, 59, .08);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 6px;
+}
+
+.medal-list b {
+  color: #f27a8b;
+  font: 500 .5rem "DM Mono", monospace;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .proof-grid-four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .medal-list {
+    gap: .18rem;
+    margin-top: .25rem;
+    padding-top: .25rem;
+  }
+
+  .medal-list li {
+    padding: .2rem;
+    font-size: .4rem;
+  }
+
+  .medal-list b {
+    font-size: .4rem;
+  }
+}
+/* Academic milestones: three visible rows, with event photos beside proofs */
+.academic-panel {
+  min-height: 0;
+}
+
+.academic-panel > .milestone-row {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: 1.05fr .95fr;
+  gap: .6rem;
+  min-height: 0;
+}
+
+.academic-panel > .milestone-row + .milestone-row {
+  margin-top: .35rem;
+  padding-top: .35rem;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+}
+
+.milestone-event,
+.milestone-side {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.milestone-event .proof-title {
+  flex: 0 0 auto;
+  margin-bottom: .25rem;
+}
+
+.milestone-event > .proof-photo {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.senior-documents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: .3rem;
+}
+
+.senior-documents .proof-photo:first-child {
+  grid-row: span 2;
+}
+
+.medal-details {
+  gap: .25rem;
+}
+
+.medal-photo {
+  flex: 0 0 42%;
+  min-height: 0;
+}
+
+.academic-panel .proof-photo img {
+  object-fit: contain !important;
+  padding: .25rem;
+}
+
+.academic-panel .proof-photo figcaption {
+  flex: 0 0 auto;
+  font-size: clamp(.42rem, .55vw, .55rem);
+}
+
+.academic-panel .award-list {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: .08rem;
+  margin: 0;
+  padding: .2rem 0 .1rem 1rem;
+  color: #e8d5d8;
+  font-size: clamp(.42rem, .55vw, .55rem);
+  line-height: 1.2;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+}
+
+.academic-panel .award-list li {
+  padding-left: .05rem;
+}
+
+.academic-panel .award-list li::marker {
+  color: #f27a8b;
+}

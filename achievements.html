@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<base target="portfolioFrame">
+<title>Achievements | Sheyda Palpal</title>
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+/* ===== Achievements: one screen, no scrolling, no hover needed ===== */
+html, body { height: 100%; overflow: hidden; margin: 0; }
+
+.site-nav {
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  z-index: 60 !important;
+  height: 4.2rem !important;
+}
+
+.ac-page {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  padding: 4.4rem min(3vw, 2.5rem) 3.9rem;
+  overflow: hidden;
+}
+
+/* ---- top school timeline ---- */
+.ac-timeline { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: clamp(.6rem, 2vw, 1.8rem); }
+.ac-step { display: flex; align-items: center; gap: .6rem; }
+.ac-logo {
+  flex: 0 0 auto;
+  width: clamp(2.2rem, 5.4vh, 3.4rem);
+  height: clamp(2.2rem, 5.4vh, 3.4rem);
+  display: grid; place-items: center; overflow: hidden;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 80, 90, .4);
+  box-shadow: 0 0 18px rgba(255, 45, 61, .2);
+}
+.ac-logo img { width: 100%; height: 100%; padding: 4px; object-fit: contain; }
+.ac-step b { display: block; font-size: clamp(.66rem, 1.5vh, .86rem); color: #fff4f5; line-height: 1.15; }
+.ac-step span { display: block; font: 500 clamp(.55rem, 1.3vh, .72rem) "DM Mono", monospace; letter-spacing: .1em; color: #f27a8b; text-transform: uppercase; }
+.ac-step.current span { color: #79e5a3; }
+.ac-line { flex: 0 1 clamp(2rem, 8vw, 7rem); height: 2px; background: linear-gradient(90deg, rgba(255,45,61,.9), rgba(255,45,61,.15)); box-shadow: 0 0 10px rgba(255, 45, 61, .5); }
+
+/* ---- grid: 5 shared rows so everything lines up across cards 1-3 ---- */
+.ac-grid {
+  flex: 1 1 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto minmax(0, 1.95fr) minmax(0, .8fr) minmax(0, 1.02fr) minmax(0, 1.02fr);
+  column-gap: clamp(.5rem, 1vw, 1rem);
+  row-gap: .4rem;
+}
+.ac-card {
+  grid-row: 1 / span 5;
+  display: grid;
+  grid-template-rows: subgrid;
+  min-width: 0; min-height: 0;
+  padding: clamp(.55rem, 1.2vh, .95rem);
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(70, 10, 20, .6), rgba(14, 3, 6, .78));
+  border: 1px solid rgba(255, 80, 90, .22);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .07);
+  backdrop-filter: blur(5px);
+}
+.ac-card.milestones { display: flex; flex-direction: column; gap: .4rem; }
+
+.ac-head { grid-row: 1; display: flex; align-items: center; gap: .55rem; padding-bottom: .35rem; border-bottom: 1px solid rgba(255,255,255,.13); }
+.ac-head .ac-logo { width: clamp(2rem, 4.6vh, 2.8rem); height: clamp(2rem, 4.6vh, 2.8rem); border-radius: 11px; }
+.ac-head b { display: block; font-size: clamp(.66rem, 1.5vh, .86rem); color: #fff4f5; line-height: 1.15; }
+.ac-head span { font: 500 clamp(.55rem, 1.25vh, .7rem) "DM Mono", monospace; letter-spacing: .1em; color: #f27a8b; }
+
+.ac-title { flex: 0 0 auto; margin: 0; font-size: clamp(.95rem, 2.5vh, 1.35rem); letter-spacing: -.03em; color: #fff; border-bottom: 1px solid rgba(255,255,255,.13); padding-bottom: .3rem; }
+.ac-title span { color: #ed334c; }
+
+/* frames */
+.ac-fig {
+  position: relative; margin: 0; min-width: 0; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: linear-gradient(145deg, rgba(102, 16, 34, .7), rgba(16, 5, 9, .95));
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 10px;
+}
+.ac-fig img { display: block; flex: 1 1 0; min-height: 0; width: 100%; padding: 3px; object-fit: contain; }
+
+/* event photos: zoomed in to fill the frame */
+.ac-fig.photo img { padding: 0; object-fit: cover; object-position: center 30%; }
+
+.ac-fig figcaption {
+  flex: 0 0 auto; padding: .3rem .45rem; text-align: center;
+  font: 500 clamp(.5rem, 1.2vh, .66rem) "DM Mono", monospace; letter-spacing: .04em;
+  color: #f6e7e9; background: rgba(10, 3, 6, .85); border-top: 1px solid rgba(255,255,255,.1);
+}
+.ac-fig figcaption .role { display: block; margin-top: .15rem; color: #ff8a9a; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.ac-fig figcaption .note { display: block; margin-top: .15rem; color: #e8d5d8; }
+.ac-card.milestones .ac-fig { flex: 1 1 0; }
+
+/* certificates fill the whole frame */
+.ac-fig.cert img { padding: 0; object-fit: cover; object-position: center; }
+
+/* row placement (same on every card) */
+.r-photo { grid-row: 2; }
+.r-big   { grid-row: 2 / span 2; }
+.r-dip   { grid-row: 3; }
+.r-a     { grid-row: 4; }
+.r-b     { grid-row: 5; }
+.r-med   { grid-row: 4 / span 2; }
+.r-med1  { grid-row: 3 / span 3; }
+
+/* picture left, text right */
+.ac-side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .45rem; min-height: 0; }
+.ac-side .ac-fig { height: 100%; }
+.ac-list, .ac-cap { margin: 0; min-width: 0; min-height: 0; overflow: hidden; color: #f1dde0; font-size: clamp(.52rem, 1.35vh, .78rem); line-height: 1.3; }
+.ac-list { display: flex; flex-direction: column; justify-content: space-around; padding: 0 0 0 1.05rem; }
+.ac-list small { display: block; margin-top: .1rem; font-size: .88em; color: #f27a8b; line-height: 1.25; }
+.ac-list li::marker { color: #f27a8b; font-weight: 700; }
+.ac-cap { display: flex; flex-direction: column; justify-content: center; gap: .25rem; padding: .3rem .5rem; background: rgba(214,31,59,.09); border: 1px solid rgba(255,255,255,.1); border-radius: 9px; }
+.ac-cap em { font: normal 500 clamp(.5rem, 1.15vh, .62rem) "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; color: #f27a8b; }
+.ac-cap strong { color: #fff; font-size: clamp(.58rem, 1.5vh, .85rem); }
+
+/* medals: frame is one row tall (same as the diploma), list runs down the right side */
+.ac-side.multi { grid-template-rows: subgrid; }
+.ac-side.multi > .ac-fig { grid-column: 1; grid-row: 1; }
+.ac-side.multi > .ac-fig.post { grid-row: 2; }
+.ac-side.multi > .ac-list { grid-column: 2; grid-row: 1 / -1; }
+
+/* hover preview: the picture grows from its own spot (not on the first photos) */
+.ac-fig:not(.photo) img { cursor: zoom-in; }
+#ac-pop {
+  position: fixed; z-index: 100; overflow: hidden; pointer-events: none; opacity: 0;
+  border-radius: 10px; background: #12040a; border: 1px solid rgba(255, 90, 105, .55);
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  transition: left .38s cubic-bezier(.22,.8,.25,1), top .38s cubic-bezier(.22,.8,.25,1),
+              width .38s cubic-bezier(.22,.8,.25,1), height .38s cubic-bezier(.22,.8,.25,1),
+              box-shadow .38s ease, opacity .12s ease;
+}
+#ac-pop.on { opacity: 1; box-shadow: 0 18px 50px rgba(0,0,0,.6), 0 0 26px rgba(255, 45, 61, .35); }
+#ac-pop img {
+  position: absolute; display: block; max-width: none; padding: 0;
+  transition: left .38s cubic-bezier(.22,.8,.25,1), top .38s cubic-bezier(.22,.8,.25,1),
+              width .38s cubic-bezier(.22,.8,.25,1), height .38s cubic-bezier(.22,.8,.25,1);
+}
+@media (hover: none) { #ac-pop { display: none; } .ac-fig:not(.photo) img { cursor: default; } }
+
+/* phones / very small screens: scrolling is unavoidable */
+@media (max-width: 900px), (max-height: 520px) {
+  html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
+  .ac-page { position: relative; inset: auto; padding: 5.2rem 1rem 5rem; overflow: visible; }
+  .ac-timeline { flex-wrap: wrap; }
+  .ac-line { display: none; }
+  .ac-grid { display: flex; flex-direction: column; gap: 1rem; }
+  .ac-card { display: flex; flex-direction: column; gap: .6rem; padding: 1rem; }
+  .ac-fig { height: 62vw; flex: none; }
+  .r-big { height: 75vw; }
+  .ac-side { height: 48vw; }
+  .ac-list, .ac-cap { font-size: .78rem; }
+  .ac-side.multi { grid-template-rows: auto; height: auto; }
+  .ac-side.multi > .ac-fig.post { grid-row: 2; height: 40vw; }
+  .ac-side.multi > .ac-fig, .ac-side.multi > .ac-list { grid-row: 1; }
+}
+</style>
+</head>
+<body>
+<div class="ambient-light light-one"></div>
+<div class="ambient-light light-two"></div>
+<div class="grid-overlay"></div>
+<div class="cursor-light"></div>
+
+<header class="site-nav">
+  <a class="brand" href="index.html">Sheyda Palpal</a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">Personal Information</a>
+    <a class="active" href="achievements.html">Achievements</a>
+    <a href="family.html">Family &amp; Friends</a>
+  </nav>
+</header>
+
+<main class="ac-page">
+
+  <div class="ac-timeline">
+    <div class="ac-step">
+      <div class="ac-logo"><img src="assets/aes-logo.png" alt="Abatan Elementary School logo" /></div>
+      <div><b>Abatan Elementary School</b><span>2020</span></div>
+    </div>
+    <div class="ac-line"></div>
+    <div class="ac-step">
+      <div class="ac-logo"><img src="assets/gnhs-logo.png" alt="Guinzadan National High School logo" /></div>
+      <div><b>Guinzadan National High School</b><span>2026</span></div>
+    </div>
+    <div class="ac-line"></div>
+    <div class="ac-step current">
+      <div class="ac-logo"><img src="assets/uc-logo.png" alt="University of the Cordilleras logo" /></div>
+      <div><b>University of the Cordilleras</b><span>● Current</span></div>
+    </div>
+  </div>
+
+  <div class="ac-grid">
+
+    <!-- CARD 1 -->
+    <section class="ac-card">
+      <div class="ac-head">
+        <div class="ac-logo"><img src="assets/aes-logo.png" alt="" /></div>
+        <div><b>Abatan Elementary School</b><span>2014 – 2020</span></div>
+      </div>
+      <figure class="ac-fig photo r-photo"><img src="assets/elem-grad.jpg" alt="Sheyda with her mom during elementary graduation" /></figure>
+      <div class="ac-side multi r-med1">
+        <figure class="ac-fig cert"><img src="assets/elem-medals.png" alt="Elementary medals" /></figure>
+        <ol class="ac-list">
+          <li>Academic Excellence Award, 94% With Honors<br><small>Grade 6</small></li>
+          <li>Good Conduct Award<br><small>Grade 6</small></li>
+          <li>Journalism Achievement Award<br><small>3rd Place, English Sports Writing · Grade 6 · Represented Abatan Elementary School</small></li>
+          <li>District Level Quiz Bee Award<br><small>1st Place, Science · Grade 6 · Represented Abatan Elementary School</small></li>
+          <li>Mathematics Achievement Award<br><small>Grade 5</small></li>
+          <li>Science Achievement Award<br><small>Grade 6</small></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CARD 2 -->
+    <section class="ac-card">
+      <div class="ac-head">
+        <div class="ac-logo"><img src="assets/gnhs-logo.png" alt="" /></div>
+        <div><b>Guinzadan National High School</b><span>2020 – 2024</span></div>
+      </div>
+      <figure class="ac-fig photo r-photo"><img src="assets/moving-up.jpg" alt="Sheyda with her friend during moving up" /></figure>
+      <div class="ac-side r-dip">
+        <figure class="ac-fig cert"><img src="assets/mupdiploma.jpg" alt="Junior high school diploma" /></figure>
+        <div class="ac-cap"><em>Diploma</em><strong>Junior High School</strong><span>Guinzadan National High School · 2024</span></div>
+      </div>
+      <div class="ac-side multi r-med">
+        <figure class="ac-fig cert"><img src="assets/medals.jpg" alt="High school medals" /></figure>
+        <figure class="ac-fig post"><img src="assets/arts-post.jpg" alt="School post recognizing my painting as the center piece" /></figure>
+        <ol class="ac-list">
+          <li>With High Honors, 95% Overall Academic Award, Grade 7</li>
+          <li>Best in Music<br><small>Grade 10</small></li>
+          <li>With Honors, 94% Overall Academic Award, Grade 8</li>
+          <li>With High Honors, 95% Overall Academic Award, Grade 9</li>
+          <li>With High Honors, 95% Overall Academic Award, Grade 10</li>
+          <li>Best in Arts<br><small>Grade 9 · Entrusted by the school to paint its center piece after my earlier artworks</small></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CARD 3 -->
+    <section class="ac-card">
+      <div class="ac-head">
+        <div class="ac-logo"><img src="assets/gnhs-logo.png" alt="" /></div>
+        <div><b>Guinzadan National High School</b><span>2024 – 2026</span></div>
+      </div>
+      <figure class="ac-fig photo r-photo"><img src="assets/grad.jpg" alt="Sheyda with her mom during senior high graduation" /></figure>
+      <div class="ac-side r-dip">
+        <figure class="ac-fig cert"><img src="assets/senior.jpg" alt="Senior high school diploma" /></figure>
+        <div class="ac-cap"><em>Diploma · 2026</em><strong>Senior High School</strong><span>Strand: Accountancy, Business and Management</span></div>
+      </div>
+      <div class="ac-side r-a">
+        <figure class="ac-fig cert"><img src="assets/cert-1.jpg" alt="Certificate of Academic Excellence" /></figure>
+        <div class="ac-cap"><em>Certificate of Academic Excellence</em><strong>General Average of 97%</strong><span>“With High Honors”</span></div>
+      </div>
+      <div class="ac-side r-b">
+        <figure class="ac-fig cert"><img src="assets/cert-2.jpg" alt="Certificate of Academic Excellence" /></figure>
+        <div class="ac-cap"><em>Certificate of Academic Excellence</em><strong>General Average of 96%</strong><span>“With High Honors”</span></div>
+      </div>
+    </section>
+
+    <!-- CARD 4 -->
+    <section class="ac-card milestones">
+      <h2 class="ac-title">Academic <span>Milestones</span></h2>
+      <figure class="ac-fig">
+        <img src="assets/cert-3.jpg" alt="Certificate of Completion, Work Immersion" />
+        <figcaption>Certificate of Completion · Work Immersion<b class="role">Role: Pharmacy Assistant Intern</b><span class="note">80 hours of hands-on training</span></figcaption>
+      </figure>
+      <figure class="ac-fig">
+        <img src="assets/cert-4.jpg" alt="Certificate of Completion, Moving the Youth Towards Peace and Development" />
+        <figcaption>Certificate of Completion · Moving the Youth Towards Peace and Development<span class="note">Completed the full program</span></figcaption>
+      </figure>
+    </section>
+
+  </div>
+</main>
+
+<a class="previous-page" href="about.html">← Back</a>
+<a class="next-page" href="family.html">Next <span>→</span></a>
+
+<script>
+/* hover preview: grows from the picture's own spot, smooth in and out */
+(function () {
+  if (!window.matchMedia('(hover: hover)').matches) return;
+  var pop = document.createElement('div'), pimg = document.createElement('img');
+  pop.id = 'ac-pop'; pop.appendChild(pimg); document.body.appendChild(pop);
+  var timer;
+
+  function place(el, r) {
+    el.style.left = r.x + 'px'; el.style.top = r.y + 'px';
+    el.style.width = r.w + 'px'; el.style.height = r.h + 'px';
+  }
+  // where the image sits inside a box, the way object-fit would draw it
+  function inner(bw, bh, nw, nh, fit, px, py) {
+    var k = fit === 'cover' ? Math.max(bw / nw, bh / nh) : Math.min(bw / nw, bh / nh);
+    var w = nw * k, h = nh * k;
+    return { x: (bw - w) * px, y: (bh - h) * py, w: w, h: h };
+  }
+  function pos(v) { var n = parseFloat(v); return isNaN(n) ? .5 : n / 100; }
+
+  document.querySelectorAll('.ac-fig:not(.photo) img').forEach(function (img) {
+    img.addEventListener('mouseenter', function () {
+      var f = img.getBoundingClientRect(), cs = getComputedStyle(img);
+      var nw = img.naturalWidth || f.width, nh = img.naturalHeight || f.height;
+      var op = cs.objectPosition.split(' ');
+      var start = inner(f.width, f.height, nw, nh, cs.objectFit, pos(op[0]), pos(op[1]));
+
+      // target: whole picture, a moderate size, growing around its own centre
+      var asp = nw / nh;
+      // diplomas and certificates all share the size box of the card 4 certificates
+      var doc = !img.closest('.multi') || !!img.closest('.post');
+      var ref = doc ? document.querySelector('.milestones .ac-fig img').getBoundingClientRect() : f;
+      var maxW = Math.min(ref.width * 2.1, innerWidth * .4);
+      var maxH = Math.min(ref.height * 2.3, innerHeight * .68);
+      var w = Math.min(maxW, maxH * asp), h = w / asp;
+      var x = Math.min(Math.max(f.left + f.width / 2 - w / 2, 12), innerWidth - w - 12);
+      var y = Math.min(Math.max(f.top + f.height / 2 - h / 2, 12), innerHeight - h - 12);
+
+      clearTimeout(timer);
+      pimg.src = img.currentSrc || img.src;
+      pop.style.transition = pimg.style.transition = 'none';
+      pop.classList.remove('on');
+      place(pop, { x: f.left, y: f.top, w: f.width, h: f.height });
+      place(pimg, start);
+      pop.style.opacity = 1;
+      void pop.offsetWidth;
+      pop.style.transition = pimg.style.transition = '';
+      pop.classList.add('on');
+      place(pop, { x: x, y: y, w: w, h: h });
+      place(pimg, { x: 0, y: 0, w: w, h: h });
+      img._start = { f: f, s: start };
+    });
+    img.addEventListener('mouseleave', function () {
+      var st = img._start; if (!st) return;
+      pop.classList.remove('on');
+      place(pop, { x: st.f.left, y: st.f.top, w: st.f.width, h: st.f.height });
+      place(pimg, st.s);
+      timer = setTimeout(function () { pop.style.opacity = 0; }, 380);
+    });
+  });
+})();
+</script>
+<script>
+/* shrink any award list / caption just enough so all of its text is visible */
+(function () {
+  function fit() {
+    document.querySelectorAll('.ac-list, .ac-cap').forEach(function (el) {
+      el.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollHeight > el.clientHeight + 1 && fs > 7) { fs -= .5; el.style.fontSize = fs + 'px'; }
+    });
+  }
+  window.addEventListener('load', fit);
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+</script>
+<script src="script.js"></script>
+</body>
+</html>
