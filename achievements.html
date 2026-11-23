@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<base target="portfolioFrame">
 <title>Achievements | Sheyda Palpal</title>
 <link rel="stylesheet" href="styles.css" />
 
@@ -167,6 +166,9 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   .ac-side.multi > .ac-fig.post { grid-row: 2; height: 40vw; }
   .ac-side.multi > .ac-fig, .ac-side.multi > .ac-list { grid-row: 1; }
 }
+
+/* Back / Next buttons hidden on this page */
+.next-page, .previous-page { display: none !important; }
 </style>
 </head>
 <body>
@@ -200,7 +202,7 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
     <div class="ac-line"></div>
     <div class="ac-step current">
       <div class="ac-logo"><img src="assets/uc-logo.png" alt="University of the Cordilleras logo" /></div>
-      <div><b>University of the Cordilleras</b><span>● Current</span></div>
+      <div><b>University of the Cordilleras</b><span>● Current BS Computer Science</span></div>
     </div>
   </div>
 
@@ -277,7 +279,7 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
       <h2 class="ac-title">Academic <span>Milestones</span></h2>
       <figure class="ac-fig">
         <img src="assets/cert-3.jpg" alt="Certificate of Completion, Work Immersion" />
-        <figcaption>Certificate of Completion · Work Immersion<b class="role">Role: Pharmacy Assistant Intern</b><span class="note">80 hours of hands-on training</span></figcaption>
+        <figcaption>Certificate of Completion · Work Immersion<b class="role">Role: Pharmacy Operations Intern</b><span class="note">80 hours of hands-on training</span></figcaption>
       </figure>
       <figure class="ac-fig">
         <img src="assets/cert-4.jpg" alt="Certificate of Completion, Moving the Youth Towards Peace and Development" />
@@ -288,8 +290,7 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   </div>
 </main>
 
-<a class="previous-page" href="about.html">← Back</a>
-<a class="next-page" href="family.html">Next <span>→</span></a>
+
 
 <script>
 /* hover preview: grows from the picture's own spot, smooth in and out */
@@ -369,5 +370,6 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 })();
 </script>
 <script src="script.js"></script>
+<script src="sounds.js"></script>
 </body>
 </html>

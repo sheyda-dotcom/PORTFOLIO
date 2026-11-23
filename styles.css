@@ -3549,3 +3549,4 @@ html:has(.achievements-body) body {
 .academic-panel .award-list li::marker {
   color: #f27a8b;
 }
+.ab-photo { width: min(14vw, 20vh); }

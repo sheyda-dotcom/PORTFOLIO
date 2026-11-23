@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <base target="portfolioFrame">
   <title>Sheyda Palpal | Portfolio</title>
   <link rel="stylesheet" href="styles.css" />
 
   <style>
-    /* ---- Home layout: centered card, big photo card, glowing name strip, no scrolling ---- */
+    /* ---- Home layout: centered card, full-body figure blended into the card, glowing name strip, no scrolling ---- */
     html, body { height: 100%; overflow: hidden; margin: 0; }
 
     .site-nav {
@@ -28,12 +27,17 @@
       pointer-events: none;
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
               mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+      contain: layout paint style;               /* nothing else on the page can slow it down or move it */
+      isolation: isolate;
     }
     .name-track {
       display: flex;
       width: max-content;
       animation: name-slide 40s linear infinite;
-      filter: drop-shadow(0 0 22px rgba(255, 40, 70, 0.65)) drop-shadow(0 0 60px rgba(255, 40, 70, 0.35));
+      filter: drop-shadow(0 0 24px rgba(255, 40, 70, 0.6));
+      will-change: transform;
+      backface-visibility: hidden;
+      animation-timing-function: linear;
     }
     .name-group { display: flex; flex-shrink: 0; }
     .name-group span {
@@ -57,24 +61,24 @@
       min-height: 0 !important;
       margin: 0 !important;
       overflow: hidden !important;
-      padding: 104px 0 112px !important;
+      padding: 92px 0 96px 0 !important;
       display: flex !important;
-      justify-content: center !important;
+      justify-content: flex-start !important;
       align-items: stretch !important;
     }
 
     html body main.home section.hero-card {
       box-sizing: border-box !important;
       flex: 0 0 auto !important;
-      width: 84vw !important;
+      width: 50vw !important;
       max-width: none !important;
       height: 100% !important;
       min-height: 0 !important;
       margin: 0 !important;
       overflow: hidden !important;
       display: grid !important;
-      grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr) !important;
-      gap: clamp(1rem, 2vw, 2.5rem) !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: clamp(0.5rem, 1vw, 1.5rem) !important;
       align-items: stretch !important;
     }
     html body main.home .intro {
@@ -82,62 +86,299 @@
       min-width: 0 !important;
     }
 
-    /* The photo card takes all the empty space */
-    html body main.home .visual {
-      height: 100% !important;
-      min-height: 0 !important;
-      width: 100% !important;
-      margin: 0 !important;
-      display: flex !important;
-      align-items: stretch !important;
-    }
-    html body main.home .code-card {
-      width: 100% !important;
-      height: 100% !important;
-      min-height: 0 !important;
-      max-width: none !important;
-      margin: 0 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      overflow: hidden !important;
-    }
-    html body main.home .code-bar { flex: 0 0 auto !important; }
-    html body main.home .profile-wrap {
-      flex: 1 1 auto !important;
-      min-height: 0 !important;
-      width: 100% !important;
-      height: auto !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-    }
-    html body main.home .profile-wrap img {
-      display: block !important;
-      width: 100% !important;
-      height: 100% !important;
-      max-width: none !important;
-      max-height: none !important;
-      object-fit: contain !important;
-      object-position: center bottom !important;
-      transform: scale(1.12) !important;
-      transform-origin: center bottom !important;
+    /* =====================================================
+       FULL-BODY FIGURE: fixed to the right half of the screen,
+       head at the very top, shoes at the very bottom
+       ===================================================== */
+    .figure {
+      /* ▼ the ONLY place you need to change the picture's file name */
+      --fig: url("assets/profile-full.png");
+      --head-gap: 0.5rem;           /* ▼ space kept above the head (menu height + a little). Bigger = shorter picture */
+
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 50vw;
+      z-index: 3;                 /* above the card, below the menu */
+      pointer-events: none;
     }
 
-    /* Phones */
+    /* the right side is calm and dark: no red glow around the photo, the red lives on the left only */
+    .right-shade {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 58vw;
+      z-index: 0;                       /* hides the moving red lights on the right, but stays under the name strip */
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(3, 2, 3, 0) 0%, rgba(3, 2, 3, .9) 24%, #030203 42%);
+    }
+
+    /* the person: two layers sharing one silhouette */
+    .fig-body {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;      /* shoes stay on the bottom edge */
+      top: var(--head-gap);              /* the head stops here, under the menu */
+      /* when the page opens she is "scanned in" from the shoes up; afterwards she leans slightly with the mouse */
+      animation: fig-reveal 1.8s cubic-bezier(.65, 0, .25, 1) .3s both;
+      transform-origin: 50% 100%;          /* leans from her shoes, so they never leave the floor */
+      will-change: transform;
+    }
+    @keyframes fig-reveal {
+      from { clip-path: inset(100% 0 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+    /* the bright line that draws her in */
+    .fig-line {
+      position: absolute;
+      left: -8%; right: -8%;
+      top: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(255, 190, 200, .95) 50%, transparent);
+      box-shadow: 0 0 22px 4px rgba(255, 70, 100, .75);
+      animation: fig-line 1.8s cubic-bezier(.65, 0, .25, 1) .3s both;
+    }
+    @keyframes fig-line {
+      0%   { top: 100%; opacity: 1; }
+      90%  { opacity: 1; }
+      100% { top: 0; opacity: 0; }
+    }
+
+    /* she slowly "breathes" */
+    .fig-live {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 100%;
+      animation: fig-breathe 5s ease-in-out 2.4s infinite;
+    }
+    @keyframes fig-breathe {
+      0%, 100% { transform: scale(1, 1); }
+      50%      { transform: scale(1.006, 1.011); }
+    }
+
+    .fig-img,
+    .fig-tint,
+    .fig-sheen {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* 1) the photo: fully solid, a touch more vivid so she stands out from the dark */
+    .fig-img {
+      background: var(--fig) center bottom / auto 100% no-repeat;
+      opacity: 1;
+      filter: saturate(1.08) contrast(1.06) brightness(1.1);
+    }
+    /* 2) light red grade painted only on the silhouette (very gentle, just enough to match the theme) */
+    .fig-tint {
+      -webkit-mask: var(--fig) center bottom / auto 100% no-repeat;
+              mask: var(--fig) center bottom / auto 100% no-repeat;
+      background: linear-gradient(180deg, rgba(255, 70, 100, 0) 0%, rgba(214, 31, 59, .3) 100%);
+      mix-blend-mode: soft-light;
+    }
+
+    /* 3) a soft glint of light that glides across her suit every few seconds (only inside her outline) */
+    .fig-sheen {
+      overflow: hidden;
+      -webkit-mask: var(--fig) center bottom / auto 100% no-repeat;
+              mask: var(--fig) center bottom / auto 100% no-repeat;
+    }
+    .fig-sheen::before {
+      content: "";
+      position: absolute;
+      top: -10%; bottom: -10%; left: 0;
+      width: 36%;
+      background: linear-gradient(100deg, transparent 0%, rgba(255, 235, 238, .5) 50%, transparent 100%);
+      transform: translateX(-130%) skewX(-18deg);
+      animation: fig-glint 12s ease-in-out 2.2s infinite;
+    }
+    @keyframes fig-glint {
+      0%, 45%   { transform: translateX(-130%) skewX(-18deg); }
+      62%, 100% { transform: translateX(340%) skewX(-18deg); }
+    }
+
+    /* scan: a band of light travels up her body, and again down it a few seconds later, forever.
+       It lights only her outline, plus a thin line in the air next to her. */
+    .fig-scan, .fig-scan > div { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .fig-scan .scan-body {
+      -webkit-mask: var(--fig) center bottom / auto 100% no-repeat;
+              mask: var(--fig) center bottom / auto 100% no-repeat;
+    }
+    .fig-scan .scan-air {
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    }
+    .fig-scan i {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 16%;
+      opacity: 0;
+      animation: fig-scan 12s ease-in-out 2.2s infinite;
+    }
+    .scan-body i {
+      background: linear-gradient(180deg, transparent 0%, rgba(255, 120, 140, .28) 40%, rgba(255, 215, 222, .8) 50%, rgba(255, 120, 140, .28) 60%, transparent 100%);
+    }
+    .scan-air i {
+      background: linear-gradient(180deg, transparent calc(50% - 1px), rgba(255, 175, 190, .9) calc(50% - 1px), rgba(255, 175, 190, .9) calc(50% + 1px), transparent calc(50% + 1px));
+    }
+    @keyframes fig-scan {
+      0%, 20%   { transform: translateY(625%);  opacity: 0; }
+      21%       { transform: translateY(625%);  opacity: 1; }
+      36%       { transform: translateY(-100%); opacity: 1; }
+      37%, 66%  { transform: translateY(-100%); opacity: 0; }
+      67%       { transform: translateY(-100%); opacity: 1; }
+      82%       { transform: translateY(625%);  opacity: 1; }
+      83%, 100% { transform: translateY(625%);  opacity: 0; }
+    }
+
+    /* 4) power-up pulse: two soft waves of light ripple outward from her outline, one after the other,
+          at the start of every cycle (always behind her, never over her face) */
+    .fig-wave {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform-origin: 50% 100%;
+      -webkit-mask: var(--fig) center bottom / auto 100% no-repeat;
+              mask: var(--fig) center bottom / auto 100% no-repeat;
+      background: linear-gradient(180deg, rgba(255, 190, 202, .9), rgba(255, 90, 118, .75));
+      animation: fig-wave 12s cubic-bezier(.2, .7, .3, 1) 2.2s infinite;
+    }
+    .fig-wave.w2 { animation-delay: 2.65s; }
+    @keyframes fig-wave {
+      0%        { transform: scale(1);    opacity: .5; }
+      12%       { transform: scale(1.12); opacity: 0; }
+      12.1%, 100% { transform: scale(1);  opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fig-body { animation: none; }
+      .fig-live, .fig-sheen::before, .fig-wave, .fig-scan i { animation: none; }
+      .fig-line, .fig-scan, .fig-wave { display: none; }
+    }
+
+    /* =====================================================
+       TRIANGLE: a big round tip on the left (your name). Its two
+       edges run off the screen at the top and bottom, in the middle
+       of the page, and the wide base melts into the photo.
+       The shape is cut by the script at the bottom of the page.
+       ===================================================== */
+    html body main.home section.hero-card {
+      --r: 300px;                          /* radius of the round tip (set by the script) */
+      --cx: 24vw;                          /* where the tip's center is (set by the script) */
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 64vw !important;
+      height: 100svh !important;
+      margin: 0 !important;
+      display: block !important;
+      overflow: visible !important;
+      background: linear-gradient(115deg, rgba(110, 13, 32, .92), rgba(32, 4, 12, .94) 55%, rgba(16, 3, 8, 0) 100%) !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      -webkit-backdrop-filter: none !important;
+              backdrop-filter: none !important;
+      /* the wide base fades out into the picture */
+      -webkit-mask-image: linear-gradient(90deg, #000 66%, transparent 100%);
+              mask-image: linear-gradient(90deg, #000 66%, transparent 100%);
+    }
+    html body main.home section.hero-card::after { display: none !important; }
+
+    /* thin outline that follows the two edges; its ends fade out where it leaves the screen */
+    .tri-edge {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
+              mask-image: linear-gradient(180deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
+    }
+    .tri-edge path {
+      fill: none;
+      stroke: rgba(255, 100, 120, .62);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 5px rgba(255, 45, 75, .45));
+    }
+
+    /* the text lives inside the round tip */
+    html body main.home .intro {
+      position: absolute !important;
+      left: calc(var(--cx) - var(--r)) !important;
+      top: 50% !important;
+      transform: translateY(-50%);
+      width: calc(var(--r) * 2) !important;
+      padding: 0 !important;
+      z-index: 1;
+    }
+    /* keep the name sharp and bright on the dark glass */
+    html body main.home .intro h1 { text-shadow: 0 4px 30px rgba(0, 0, 0, .55); }
+    html body main.home .intro h1 span { text-shadow: 0 0 28px rgba(214, 31, 59, .5), 0 4px 24px rgba(0, 0, 0, .5); }
+
+    /* quieter moving background so the name stays the highlight */
+    .ambient-light { opacity: .5 !important; filter: none !important; mix-blend-mode: normal !important; will-change: transform; }
+    .cursor-light  { filter: none !important; mix-blend-mode: normal !important; }
+
+    /* name + everything with it: centered in the left half, so it sits evenly between the screen edge and the figure */
+    html body main.home .intro {
+      text-align: center !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+    html body main.home .intro p { margin: 0 auto !important; }
+    html body main.home .intro .status {
+      justify-content: center !important;
+      width: 100% !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+    html body main.home .intro .quick-links { justify-content: center !important; }
+
+    /* bottom row of the intro: contact button + social icons (replaces the resume button) */
+    .intro-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+    }
+    .intro-actions .quick-links a { padding: 14px 24px; font-size: .72rem; }
+    .intro-actions .about-socials { position: static; transform: none; margin: 0; display: flex; gap: 10px; }
+
+    /* Phones: she stands behind the text, at the bottom of the screen */
     @media (max-width: 900px) {
-      html body main.home { padding: 84px 1rem 88px !important; }
+      html body main.home { padding: 84px 1rem 88px !important; justify-content: center !important; }
       html body main.home section.hero-card {
+        position: relative !important;
         width: 100% !important;
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto minmax(0, 1fr) !important;
-        gap: 0.8rem !important;
+        height: auto !important;
+        align-self: flex-start !important;
+        clip-path: none !important;
+        -webkit-clip-path: none !important;
+        -webkit-mask-image: none !important;
+                mask-image: none !important;
+        border-radius: 24px !important;
+        border: 1px solid rgba(255, 90, 112, .3) !important;
+      }
+      .tri-edge { display: none; }
+      .right-shade { display: none; }
+      html body main.home .intro {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        width: auto !important;
+        padding: 28px 20px !important;
       }
       html body main.home .intro h1 { font-size: clamp(2.2rem, 11vw, 4rem) !important; line-height: 1 !important; }
-      html body main.home .intro p { margin-top: 0.4rem !important; }
-      html body main.home .intro .status { margin-top: 0.6rem !important; }
-      html body main.home .intro .quick-links { margin-top: 0.8rem !important; }
       .name-group span { font-size: 22vh; }
+      .figure { --head-gap: 0px; top: auto; width: 100vw; height: 62svh; z-index: 1; }
     }
+
+    /* Back / Next buttons hidden on this page */
+    .next-page, .previous-page { display: none !important; }
   </style>
 </head>
 
@@ -148,11 +389,13 @@
   <div class="grid-overlay"></div>
   <div class="cursor-light"></div>
 
+  <div class="right-shade" aria-hidden="true"></div>
+
   <!-- Moving name strip -->
   <div class="name-strip" aria-hidden="true">
     <div class="name-track">
-      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
-      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
+      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
+      <div class="name-group"><span>SHEYDA PALPAL</span><span>SHEYDA PALPAL</span></div>
     </div>
   </div>
 
@@ -163,7 +406,7 @@
     <nav class="nav-links">
     <a class="active" href="index.html">Home</a>
     <a href="about.html">Personal Information</a>
-    <a href="Achievements.html">Achievements</a>
+    <a href="achievements.html">Achievements</a>
     <a href="family.html">Family & Friends</a>
     </nav>
   </header>
@@ -171,6 +414,7 @@
   <!-- Home content -->
   <main class="home">
     <section class="hero-card">
+      <svg class="tri-edge" aria-hidden="true"><path d=""></path></svg>
       <div class="intro">
         <span class="system">System Ready · Portfolio 2026</span>
 
@@ -185,38 +429,115 @@
           Available for opportunities
         </div>
 
-        <div class="quick-links">
-          <a href="about.html">contact</a>
-
-          <a href="assets/sheyda_palpal_resume.pdf" target="_blank">
-            ◉ View Resume
-          </a>
-        </div>
-      </div>
-
-      <div class="visual">
-        <div class="code-card">
-          <div class="code-bar">
-            <span class="dots">● ● ●</span>
-            <span>sheyda.profile</span>
+        <div class="intro-actions">
+          <div class="quick-links">
+            <a href="mailto:palpalsheyda@gmail.com">contact</a>
           </div>
 
-          <div class="profile-wrap">
-            <img src="assets/profile.png" alt="Sheyda Palpal" />
+          <div class="about-socials">
+            <a href="https://github.com/sheyda-dotcom" target="_blank" title="GitHub" aria-label="Open GitHub">
+              <img src="assets/github.png" alt="" />
+            </a>
+            <a href="https://www.facebook.com/sheyda.08" target="_blank" title="Facebook" aria-label="Open Facebook">
+              <img src="assets/facebook.png" alt="" />
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=639560072978" target="_blank" title="WhatsApp" aria-label="Message me on WhatsApp">
+              <img src="assets/whatsapp.png" alt="" />
+            </a>
           </div>
         </div>
       </div>
+
     </section>
   </main>
 
-  <a class="next-page" href="about.html">
-    Next
-    <span>→</span>
-  </a>
+  <!-- Full-body figure: fixed to the right half of the screen -->
+  <div class="figure" role="img" aria-label="Sheyda Palpal, full-body photo">
+    <div class="fig-body">
+      <div class="fig-live">
+        <div class="fig-wave"></div>
+        <div class="fig-wave w2"></div>
+        <div class="fig-img"></div>
+        <div class="fig-tint"></div>
+        <div class="fig-sheen"></div>
+        <div class="fig-scan"><div class="scan-body"><i></i></div><div class="scan-air"><i></i></div></div>
+      </div>
+      <div class="fig-line"></div>
+    </div>
+  </div>
 
+<!-- Cuts the card into a triangle with a big round tip -->
+<script>
+(() => {
+  const card = document.querySelector('.hero-card');
+  const edge = card.querySelector('.tri-edge');
+  const line = edge.querySelector('path');
+
+  function build() {
+    if (innerWidth <= 900) {                       /* phones: normal rounded card */
+      card.style.clipPath = card.style.webkitClipPath = '';
+      return;
+    }
+    const W  = card.clientWidth, H = card.clientHeight;
+    const vw = innerWidth / 100;
+    const xe = 50 * vw;                            /* the edges leave the screen here (middle of the page) */
+    const cx = 30 * vw, cy = H / 2;                /* center of the round tip = center of your name */
+    const r  = Math.min(H * 0.36, cx - 3 * vw);    /* size of the round tip */
+
+    const dx = xe - cx, dy = -H / 2;               /* from the tip's center to where the top edge leaves the screen */
+    const D  = Math.hypot(dx, dy);
+    const th = Math.atan2(dy, dx);
+    const al = Math.acos(r / D);
+    const a1 = th - al, a2 = -a1;                  /* where the straight edges meet the tip */
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
+    const big = Math.abs(a1) < Math.PI / 2 ? 1 : 0;
+    const f = (n) => n.toFixed(1);
+
+    const edgePath = `M ${f(xe)} 0 L ${f(x1)} ${f(y1)} A ${f(r)} ${f(r)} 0 ${big} 0 ${f(x2)} ${f(y2)} L ${f(xe)} ${H}`;
+    const shape = `${edgePath} L ${W} ${H} L ${W} 0 Z`;
+
+    /* the base starts to vanish right where the text area ends, and is fully gone before the photo */
+    const a = ((cx + r) / W) * 100;
+    const fade = `linear-gradient(90deg, #000 ${a.toFixed(1)}%, rgba(0,0,0,.82) ${(a + (100 - a) * .25).toFixed(1)}%, rgba(0,0,0,.5) ${(a + (100 - a) * .5).toFixed(1)}%, rgba(0,0,0,.18) ${(a + (100 - a) * .7).toFixed(1)}%, transparent 94%)`;
+    card.style.webkitMaskImage = card.style.maskImage = fade;
+
+    card.style.setProperty('--r', r + 'px');
+    card.style.setProperty('--cx', cx + 'px');
+    card.style.clipPath = card.style.webkitClipPath = `path('${shape}')`;
+    edge.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    line.setAttribute('d', edgePath);
+  }
+
+  build();
+  new ResizeObserver(build).observe(card);
+  addEventListener('resize', build);
+})();
+</script>
+
+<!-- Depth: she leans and turns a little with the mouse. The name strip is never touched by this script,
+     so it keeps gliding at the same speed no matter what the mouse does. -->
+<script>
+(() => {
+  if (matchMedia('(hover: none)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const body  = document.querySelector('.fig-body');
+  let target = 0, now = 0, raf = 0;
+
+  function tick() {
+    now += (target - now) * 0.09;                  /* smooth, never jumpy */
+    body.style.transform  = `perspective(1200px) translate3d(${(now * 16).toFixed(1)}px, 0, 0) rotateY(${(now * -6).toFixed(2)}deg)`;
+    raf = Math.abs(target - now) > 0.002 ? requestAnimationFrame(tick) : 0;   /* stops when she has settled */
+  }
+  function move(x) { target = x; if (!raf) raf = requestAnimationFrame(tick); }
+
+  addEventListener('mousemove', (e) => move((e.clientX / innerWidth - 0.5) * 2), { passive: true });
+  document.addEventListener('mouseleave', () => move(0));
+})();
+</script>
 
 <!-- JavaScript -->
 <script src="script.js"></script>
 
+<script src="sounds.js"></script>
 </body>
 </html>

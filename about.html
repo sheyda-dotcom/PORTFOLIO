@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<base target="portfolioFrame">
-<title>About Me | Sheyda Palpal</title>
+<title>Personal Information | Sheyda Palpal</title>
 
 <link rel="stylesheet" href="styles.css" />
 
 <style>
-/* ---- About page layout: fixed right under the nav, fits one screen, no scrolling ---- */
-html, body { height: 100%; overflow: hidden; margin: 0; }
+/* ---- Personal Information: ONE screen, no scrolling. Everything scales with the window height ---- */
+html, body { height: 100%; margin: 0; overflow: hidden; }
 
 .site-nav {
   position: fixed !important;
@@ -18,117 +17,363 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   z-index: 60 !important;
 }
 
-/* The whole page is pinned between the nav and the bottom of the screen */
+/* the page is pinned between the menu and the bottom, and split into category cards */
 .ab-page {
   position: fixed;
-  top: 88px; left: 0; right: 0; bottom: 0;
+  top: 4.5rem; left: 0; right: 0; bottom: 0;
   z-index: 2;
   box-sizing: border-box;
   margin: 0;
-  padding: 0 10vw 28px;
+  padding: .25rem 4vw 2.4rem;
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto minmax(0, 1fr);
+  --val: clamp(.86rem, 2.1vh, 1.25rem);       /* the size used for ALL the information values */
+  grid-template-areas:
+    "profile background physical  physical"
+    "profile education  parents   emergency"
+    "profile ids        ids       skills";
+  gap: clamp(.55rem, 1.5vh, 1.1rem);
   overflow: hidden;
+}
+
+/* shared glass look */
+.ab-box {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(.7rem, 1.9vh, 1.5rem) clamp(1rem, 1.6vw, 1.8rem);
+  border-radius: clamp(1.1rem, 2.6vh, 2rem);
+  border: 1px solid rgba(255, 255, 255, .09);
+  background: rgba(22, 0, 8, .55);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: ab-in .8s cubic-bezier(.2, .7, .2, 1) forwards;
+}
+.b-profile    { grid-area: profile;    animation-delay: .05s; }
+.b-background { grid-area: background; animation-delay: .15s; }
+.b-physical   { grid-area: physical;   animation-delay: .25s; }
+.b-education  { grid-area: education;  animation-delay: .35s; }
+.b-parents    { grid-area: parents;    animation-delay: .45s; }
+.b-emergency  { grid-area: emergency;  animation-delay: .55s; }
+.b-ids        { grid-area: ids;        animation-delay: .65s; }
+.b-skills     { grid-area: skills;     animation-delay: .75s; }
+@keyframes ab-in { to { opacity: 1; transform: none; } }
+
+.ab-box > h3 {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0 0 clamp(.4rem, 1.3vh, .9rem);
+  padding-bottom: clamp(.35rem, 1.1vh, .75rem);
+  font-size: clamp(.98rem, 2.4vh, 1.45rem);
+  letter-spacing: -.01em;
+  color: #fff3f5;
+  border-bottom: 1px solid rgba(255, 100, 120, .22);
+}
+.ab-box > h3::before {
+  content: "";
+  flex: none;
+  width: .55rem; height: .55rem;
+  border-radius: 50%;
+  background: #ff3d57;
+  box-shadow: 0 0 12px rgba(255, 61, 87, .9);
+}
+
+.ab-label {
+  display: block;
+  font-family: ui-monospace, "DM Mono", "Courier New", monospace;
+  font-size: clamp(.6rem, 1.42vh, .84rem);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #ff93a5;
+}
+
+/* ---------- PROFILE (left, full height) ---------- */
+.b-profile {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-}
-.ab-page .about-heading {
-  position: static !important;
-  transform: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  text-align: left;
-}
-.ab-page .about-heading h1 { margin: 0 !important; font-size: clamp(2.4rem, 3.6vw, 4rem); line-height: 1.1; }
-.ab-page .about-heading p { margin: 0.4rem 0 0 !important; }
-
-.ab-card {
-  box-sizing: border-box;
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: clamp(1.5rem, 4vw, 5rem);
   align-items: center;
-  padding: clamp(1.2rem, 2.2vw, 2.6rem);
-  border-radius: 2.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(22, 0, 8, 0.55);
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-  color: #fff;
+  justify-content: space-evenly;
+  gap: clamp(.4rem, 1.3vh, .95rem);
+  text-align: center;
 }
-
-/* 1. circle picture + your original contact buttons */
-.ab-side { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
 .ab-photo {
-  width: min(25vw, 40svh);
+  flex: none;
+  width: min(16vw, 28vh);
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid rgba(255, 77, 99, 0.55);
-  box-shadow: 0 0 40px rgba(255, 40, 70, 0.3);
+  border: 3px solid rgba(255, 77, 99, .55);
+  box-shadow: 0 0 40px rgba(255, 40, 70, .3);
 }
 .ab-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
-/* only keeps the buttons in a row under the photo; your own button styling is untouched */
-.ab-side .about-socials { position: static; transform: none; margin: 0; display: flex; gap: 0.8rem; justify-content: center; }
 
-/* 2. name + personal info */
-.ab-info { text-align: left; }
-.ab-info h2 { margin: 0; font-size: clamp(1.3rem, 2vw, 2.2rem); line-height: 1.15; font-weight: 600; }
-.ab-info h2 span { display: block; font-size: clamp(2.4rem, 4.2vw, 5rem); font-weight: 800; line-height: 1.02; color: #ff4d63; }
-.ab-details { margin-top: 1.4rem; display: grid; gap: 0.9rem; }
-.ab-detail span { display: block; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); }
-.ab-detail p { margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 700; }
-
-/* 3. paragraph (justified) */
-.ab-text p { margin: 0; font-size: clamp(0.95rem, 1.15vw, 1.25rem); line-height: 1.75; color: rgba(255, 255, 255, 0.9); text-align: justify; text-justify: inter-word; }
-
-@media (max-width: 900px) {
-  .ab-page { top: 76px; padding: 0 1rem 84px; gap: 0.6rem; }
-  .ab-page .about-heading h1 { font-size: 1.8rem; }
-  .ab-card { grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem 1rem; padding: 1rem; border-radius: 1.4rem; align-items: center; }
-  .ab-photo { width: min(34vw, 18svh); }
-  .ab-side { gap: 0.6rem; }
-  .ab-info h2 { font-size: 1rem; }
-  .ab-info h2 span { font-size: 1.6rem; }
-  .ab-details { margin-top: 0.5rem; gap: 0.4rem; }
-  .ab-detail span { font-size: 0.7rem; }
-  .ab-detail p { font-size: 0.85rem; }
-  .ab-text { grid-column: 1 / -1; }
-  .ab-text p { font-size: 0.82rem; line-height: 1.5; }
+.ab-hello { margin: 0; font-size: clamp(.8rem, 1.9vh, 1.25rem); font-weight: 600; line-height: 1.2; }
+.ab-hello span {
+  display: block;
+  font-size: clamp(1.45rem, min(4.2vh, 2.5vw), 3.3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: #ff6f86;
 }
-/* ---- Spacing and colors refinement (desktop only) ---- */
-@media (min-width: 901px) {
-  /* photo, info and paragraph now share the space evenly, so the paragraph sits closer */
-  .ab-card {
-    grid-template-columns: auto clamp(11rem, 16vw, 24rem) clamp(16rem, 26vw, 40rem);
-    justify-content: space-evenly;
-    column-gap: 0;
-  }
 
-  /* personal info: softer, in the red theme, and the same style as your tagline */
-  .ab-detail span {
-    font-family: ui-monospace, "Courier New", monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(255, 107, 129, 0.85);
-  }
-  .ab-detail p {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: rgba(255, 214, 221, 0.8);
-  }
-
-  /* paragraph slightly bigger */
-  .ab-text p {
-    font-size: clamp(1.05rem, 1.3vw, 1.4rem);
-    line-height: 1.8;
-  }
-}
-/* paragraph: no justify, first line indented */
-.ab-text p {
+.ab-basics {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(.3rem, 1vh, .7rem) .8rem;
   text-align: left;
+}
+.ab-basics div { min-width: 0; }
+.ab-basics p {
+  margin: .1rem 0 0;
+  font-size: var(--val);
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 228, 232, .94);
+}
+
+/* About me */
+.ab-about {
+  width: 100%;
+  padding-top: clamp(.4rem, 1.2vh, .8rem);
+  border-top: 1px solid rgba(255, 100, 120, .22);
+  text-align: left;
+}
+.ab-bio {
+  margin: .35rem 0 0;
+  font-size: clamp(.78rem, 1.75vh, 1.08rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, .86);
+}
+
+/* contact buttons: bigger */
+.b-profile .about-socials { position: static; transform: none; margin: 0; display: flex; gap: clamp(.55rem, 1.4vh, 1rem); justify-content: center; }
+.b-profile .about-socials a {
+  width: clamp(2.5rem, 6.2vh, 3.8rem);
+  height: clamp(2.5rem, 6.2vh, 3.8rem);
+}
+.b-profile .about-socials a img { width: 50%; height: 50%; }
+
+/* ---------- label + value pairs ---------- */
+.ab-rows {
+  display: grid;
+  gap: clamp(.4rem, 1.3vh, .95rem) clamp(.6rem, 1.4vw, 1.4rem);
+  margin: 0;
+}
+.ab-rows.one    { grid-template-columns: minmax(0, 1fr); }
+.ab-rows.two    { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ab-rows.twelve { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.ab-row { min-width: 0; }
+.ab-row.s3 { grid-column: span 3; }
+.ab-row.s9 { grid-column: span 9; }
+.ab-row.wide { grid-column: 1 / -1; }
+.ab-row dt { margin: 0; }
+.ab-row dd {
+  margin: .2rem 0 0;
+  font-size: var(--val);
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 228, 232, .94);
+}
+.ab-row dd small {
+  margin-left: .25rem;
+  font-size: .82em;
+  font-weight: 500;
+  color: rgba(255, 200, 208, .6);
+  white-space: nowrap;
+}
+
+.ab-chips { display: flex; flex-wrap: wrap; gap: clamp(.25rem, .8vh, .5rem); margin: .3rem 0 0; padding: 0; list-style: none; }
+.ab-chips li {
+  padding: .2em .8em;
+  font-size: clamp(.74rem, 1.75vh, 1.05rem);
+  font-weight: 600;
+  color: #ffe6ea;
+  background: rgba(255, 45, 61, .16);
+  border: 1px solid rgba(255, 120, 140, .55);
+  border-radius: 999px;
+}
+
+/* cards with spare room: rows spread apart, so lines never stick together */
+.b-physical, .b-background, .b-education { display: flex; flex-direction: column; }
+.b-physical .ab-rows, .b-background .ab-rows, .b-education .ab-rows { flex: 1; align-content: space-between; }
+
+/* ---------- skills & hobbies ---------- */
+.b-skills { display: flex; flex-direction: column; }
+.ab-group + .ab-group { margin-top: clamp(.5rem, 1.6vh, 1.1rem); }
+.ab-group .ab-chips { margin-top: .4rem; }
+.b-skills .ab-chips li { font-size: clamp(.68rem, 1.55vh, .95rem); }
+
+/* ---------- parents + emergency ---------- */
+.ab-people { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(.35rem, 1vh, .7rem); }
+.ab-person {
+  min-width: 0;
+  padding: clamp(.35rem, 1vh, .8rem) clamp(.7rem, 1vw, 1.1rem);
+  background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: clamp(.7rem, 1.8vh, 1.1rem);
+}
+.ab-person h4 { margin: .2rem 0 0; font-size: var(--val); font-weight: 600; line-height: 1.35; color: rgba(255, 228, 232, .94); }
+
+.b-emergency .ab-person {
+  background: linear-gradient(135deg, rgba(255, 45, 61, .13), rgba(255, 255, 255, .02));
+  border-color: rgba(255, 90, 112, .3);
+}
+.ab-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .3rem;
+  font-size: var(--val);
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 228, 232, .94);
+  white-space: nowrap;
+}
+.ab-phone svg { flex: none; width: 1em; height: 1em; color: #ff8296; }
+
+/* ---------- valid IDs ---------- */
+.b-ids { display: flex; flex-direction: column; }
+.id-row {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: clamp(.8rem, 2vw, 2rem);
+}
+.id-item { margin: 0; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.id-frame {
+  position: relative;
+  height: clamp(5rem, 14.5vh, 11.5rem);
+  aspect-ratio: 1.586 / 1;                   /* standard ID card shape */
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: clamp(.5rem, 1.4vh, 1rem);
+  border: 1px solid rgba(255, 100, 120, .4);
+  background: linear-gradient(145deg, rgba(110, 16, 36, .55), rgba(16, 3, 8, .85));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.id-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.id-frame::before, .id-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 1rem; height: 1rem;
+  pointer-events: none;
+  border: 2px solid rgba(255, 90, 112, .8);
+}
+.id-frame::before { top: .5rem; left: .5rem; border-right: 0; border-bottom: 0; border-radius: 5px 0 0 0; }
+.id-frame::after  { right: .5rem; bottom: .5rem; border-left: 0; border-top: 0; border-radius: 0 0 5px 0; }
+
+/* shown until you add the picture */
+.id-empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .25rem;
+  padding: .5rem;
+  text-align: center;
+  color: rgba(255, 190, 200, .7);
+  font: 500 clamp(.5rem, 1.2vh, .68rem) ui-monospace, "DM Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: repeating-linear-gradient(45deg, rgba(255, 45, 61, .06) 0 12px, transparent 12px 24px);
+}
+.id-empty svg { width: clamp(1rem, 3vh, 1.8rem); height: clamp(1rem, 3vh, 1.8rem); color: #ff8296; }
+.id-empty em { font-style: normal; text-transform: none; letter-spacing: 0; opacity: .7; }
+.id-frame.is-empty .id-empty { display: flex; }
+.id-frame.is-empty img { display: none; }
+
+.id-item figcaption {
+  margin-top: clamp(.25rem, .8vh, .6rem);
+  font: 500 clamp(.56rem, 1.3vh, .78rem) ui-monospace, "DM Mono", monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #ff93a5;
+}
+
+.id-note {
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .7rem;
+  margin: clamp(.35rem, 1.1vh, .8rem) 0 0;
+  padding: clamp(.35rem, 1vh, .75rem) clamp(.7rem, 1.1vw, 1.2rem);
+  font-size: clamp(.68rem, 1.55vh, .98rem);
+  line-height: 1.4;
+  color: rgba(255, 224, 229, .95);
+  background: rgba(255, 45, 61, .08);
+  border: 1px solid rgba(255, 90, 112, .25);
+  border-radius: clamp(.6rem, 1.6vh, 1rem);
+}
+.id-note svg { flex: none; width: 1.3em; height: 1.3em; color: #ff8296; }
+
+/* ---------- shorter screens: trim a little so everything still fits ---------- */
+@media (max-height: 760px) {
+  .id-empty em { display: none; }
+  .ab-bio { font-size: .7rem; line-height: 1.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-box { animation: none; opacity: 1; transform: none; }
+}
+
+/* ---------- narrow screens (phones, small windows): can't fit one screen, so it scrolls here ---------- */
+@media (max-width: 900px) {
+  html, body { height: auto; min-height: 100%; overflow-x: hidden; overflow-y: auto; }
+  .ab-page {
+    position: relative;
+    top: auto;
+    padding: 6.2rem 1rem 6.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "profile" "background" "physical" "education" "parents" "emergency" "skills" "ids";
+    overflow: visible;
+  }
+  .ab-box { overflow: visible; padding: 1.1rem; }
+  .ab-photo { width: min(50vw, 210px); }
+  .ab-rows.twelve { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ab-row.s3, .ab-row.s9 { grid-column: auto; }
+  .ab-row.s9 { grid-column: 1 / -1; }
+  .id-row { flex-direction: column; }
+  .id-frame { height: auto; width: min(100%, 320px); }
+}
+/* About: size the top cards and profile so Valid IDs and Skills & Hobbies keep their original look */
+.ab-page {
+  --val: clamp(.8rem, 1.85vh, 1.12rem);
+  gap: clamp(.4rem, 1.1vh, .9rem);
+}
+.ab-box {
+  padding: clamp(.55rem, 1.35vh, 1.1rem) clamp(.9rem, 1.4vw, 1.5rem);
+}
+.ab-box > h3 {
+  font-size: clamp(.88rem, 2.05vh, 1.25rem);
+  margin-bottom: clamp(.25rem, .9vh, .7rem);
+  padding-bottom: clamp(.25rem, .8vh, .55rem);
+}
+.ab-label { font-size: clamp(.54rem, 1.25vh, .74rem); }
+.ab-rows { gap: clamp(.3rem, .9vh, .7rem) clamp(.5rem, 1.1vw, 1rem); }
+.ab-person { padding: clamp(.3rem, .8vh, .65rem) clamp(.6rem, .9vw, 1rem); }
+
+/* profile card */
+.ab-photo { width: min(13vw, 20vh); }
+.ab-hello { font-size: clamp(.72rem, 1.6vh, 1.05rem); }
+.ab-hello span { font-size: clamp(1.25rem, min(3.5vh, 2.1vw), 2.7rem); }
+.ab-basics { gap: clamp(.2rem, .7vh, .5rem) .8rem; }
+.ab-bio { font-size: clamp(.66rem, 1.45vh, .9rem); line-height: 1.45; }
+.ab-basics {
+  gap: clamp(.6rem, 2.2vh, 1.5rem) .8rem;
 }
 </style>
 </head>
@@ -151,79 +396,170 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 
 <main class="ab-page">
 
-    <div class="about-heading">
-        <h1>Personal Information</h1>
-        <p>✧ Bridging business with technical execution ✧</p>
-    </div>
-
-    <section class="ab-card">
-
-        <!-- 1. picture (left) + original contact buttons -->
-        <div class="ab-side">
-            <div class="ab-photo">
-                <img src="assets/profile.png" alt="Sheyda Palpal" />
-            </div>
-
-            <div class="about-socials">
-                <a href="mailto:palpalsheyda@gmail.com" title="Email Me" aria-label="Email Me">
-                    <img src="assets/email.png" alt="" />
-                </a>
-
-                <a href="https://github.com/sheyda-dotcom" target="_blank" title="GitHub" aria-label="Open GitHub">
-                    <img src="assets/github.png" alt="" />
-                </a>
-
-                <a href="https://www.facebook.com/sheyda.08" target="_blank" title="Facebook" aria-label="Open Facebook">
-                    <img src="assets/facebook.png" alt="" />
-                </a>
-
-                <a href="https://api.whatsapp.com/send?phone=639560072978" target="_blank" title="WhatsApp" aria-label="Message me on WhatsApp">
-                    <img src="assets/whatsapp.png" alt="" />
-                </a>
-            </div>
+    <!-- ============ PROFILE + ABOUT ME ============ -->
+    <section class="ab-box b-profile">
+        <div class="ab-photo">
+            <img src="assets/profile.png" alt="Sheyda Palpal" />
         </div>
 
-        <!-- 2. name + personal info (middle) -->
-        <div class="ab-info">
-            <h2>Hello, I’m<br /><span>Sheyda Palpal</span></h2>
+        <h2 class="ab-hello">Hello, I’m<span>Sheyda Lapawen Palpal</span></h2>
 
-            <div class="ab-details">
-                <div class="ab-detail">
-                    <span>Date of Birth</span>
-                    <p>April 16, 2008</p>
-                </div>
-                <div class="ab-detail">
-                    <span>Age</span>
-                    <p>18 years old</p>
-                </div>
-                <div class="ab-detail">
-                    <span>Location</span>
-                    <p>Baguio City, Philippines</p>
-                </div>
-                <div class="ab-detail">
-                    <span>Status</span>
-                    <p>Single</p>
-                </div>
-            </div>
+        <div class="ab-basics">
+    <div><span class="ab-label">Date of Birth</span><p>April 16, 2008</p></div>
+    <div><span class="ab-label">Age &amp; Sex</span><p>18 · Female</p></div>
+    <div><span class="ab-label">Location</span><p>Baguio City, PH</p></div>
+    <div><span class="ab-label">Status</span><p>Single</p></div>
+    <div><span class="ab-label">Disabilities</span><p>None</p></div>
+    <div><span class="ab-label">Zodiac Sign</span><p>Aries</p></div>
+    <div style="grid-column: 1 / -1;"><span class="ab-label">Email</span><p><a href="mailto:palpalsheyda@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;">palpalsheyda@gmail.com</a></p></div>
+</div>
+
+        <div class="ab-about">
+            
+            <p class="ab-bio">First-year BS Computer Science student at the University of the Cordilleras with a background in Accountancy, Business, and Management (ABM), I bring both technical and business perspectives to my work.</p>
         </div>
 
-        <!-- 3. paragraph (right) -->
-        <div class="ab-text">
-            <p>
-                I am a first-year Bachelor of Science in Computer Science student at the University of the Cordilleras with an interest in programming, technology, and problem-solving. With a background in Accountancy, Business, and Management (ABM), I bring both technical and business perspectives to my work. I enjoy developing practical projects, with a long-term goal of specializing in Data Engineering.
-            </p>
-        </div>
-
+        
     </section>
+
+    <!-- ============ BACKGROUND ============ -->
+    <section class="ab-box b-background">
+        <h3>Background</h3>
+        <dl class="ab-rows two">
+            <div class="ab-row"><dt class="ab-label">Citizenship</dt><dd>Filipino</dd></div>
+            <div class="ab-row"><dt class="ab-label">Religion</dt><dd>Anglican</dd></div>
+            <div class="ab-row wide">
+                <dt class="ab-label">Languages &amp; Dialects</dt>
+                <dd>
+                    <ul class="ab-chips">
+                        <li>English</li><li>Tagalog</li><li>Kankanaey</li><li>Ilokano</li><li>Balangao</li>
+                    </ul>
+                </dd>
+            </div>
+        </dl>
+    </section>
+
+    <!-- ============ PHYSICAL DESCRIPTION ============ -->
+    <section class="ab-box b-physical">
+        <h3>Physical Description</h3>
+        <dl class="ab-rows twelve">
+            <div class="ab-row s3"><dt class="ab-label">Height</dt><dd>142 cm <small>4'7"</small></dd></div>
+            <div class="ab-row s3"><dt class="ab-label">Weight</dt><dd>38 kg <small>83.8 lb</small></dd></div>
+            <div class="ab-row s3"><dt class="ab-label">BMI Category</dt><dd>Normal</dd></div>
+            <div class="ab-row s3"><dt class="ab-label">Blood Type</dt><dd>A+</dd></div>
+            <div class="ab-row s3"><dt class="ab-label">Eye Color</dt><dd>Brown</dd></div>
+            <div class="ab-row s3"><dt class="ab-label">Hair Color</dt><dd>Dark brown</dd></div>
+            <div class="ab-row" style="grid-column: span 6;"><dt class="ab-label">Allergies</dt><dd>Crustacean shellfish</dd></div>
+            <div class="ab-row wide"><dt class="ab-label">Distinguishing Marks</dt><dd>Moles on left cheekbone, chin, right cheek · Birthmark on upper thigh</dd></div>
+        </dl>
+    </section>
+
+    <!-- ============ EDUCATION ============ -->
+    <section class="ab-box b-education">
+        <h3>College</h3>
+        <dl class="ab-rows one">
+            <div class="ab-row"><dt class="ab-label">University</dt><dd>University of the Cordilleras</dd></div>
+            <div class="ab-row"><dt class="ab-label">Year &amp; Program</dt><dd>1st Year · BS Computer Science</dd></div>
+        </dl>
+    </section>
+
+    <!-- ============ PARENTS ============ -->
+    <section class="ab-box b-parents">
+        <h3>Parents</h3>
+        <div class="ab-people">
+            <div class="ab-person">
+                <span class="ab-label">Father · Business Owner</span>
+                <h4>Phillip B. Palpal</h4>
+            </div>
+            <div class="ab-person">
+                <span class="ab-label">Mother · Business Owner</span>
+                <h4>Floribel L. Palpal</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ EMERGENCY CONTACT ============ -->
+    <section class="ab-box b-emergency">
+        <h3>Emergency Contact</h3>
+        <div class="ab-person">
+            <span class="ab-label">Contact Person</span>
+            <h4>Phillip B. Palpal</h4>
+            <a class="ab-phone" href="tel:+639506398676">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+                +63 950 639 8676
+            </a>
+        </div>
+    </section>
+
+    <!-- ============ VALID IDs ============ -->
+    <section class="ab-box b-ids">
+        <h3>Valid IDs</h3>
+
+        <div class="id-row">
+            <!-- ▼ put each blurred ID in assets/ with these file names, and rename the captions to the ID type -->
+            <figure class="id-item">
+                <div class="id-frame">
+                    <img src="assets/id1.jpg" alt="Valid ID 1 (blurred)" />
+                    <div class="id-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M14 10h4M14 14h4M6 16c.6-1.6 1.7-2.3 3-2.3s2.4.7 3 2.3"/></svg>
+                        Blurred ID here
+                        <em>assets/id1.jpg</em>
+                    </div>
+                </div>
+                <figcaption>driver's license</figcaption>
+            </figure>
+
+            <figure class="id-item">
+                <div class="id-frame">
+                    <img src="assets/id2.jpg" alt="Valid ID 2 (blurred)" />
+                    <div class="id-empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M14 10h4M14 14h4M6 16c.6-1.6 1.7-2.3 3-2.3s2.4.7 3 2.3"/></svg>
+                        Blurred ID here
+                        <em>assets/id2.jpg</em>
+                    </div>
+                </div>
+                <figcaption>national id</figcaption>
+            </figure>
+
+        </div>
+
+        <p class="id-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span>ID images and full numbers are withheld in compliance with RA 10173 (Data Privacy Act of 2012).</span>
+        </p>
+    </section>
+
+    <!-- ============ SKILLS & HOBBIES ============ -->
+    <section class="ab-box b-skills">
+        <h3>Skills &amp; Hobbies</h3>
+
+        <div class="ab-group">
+            <span class="ab-label">Skills</span>
+            <ul class="ab-chips">
+                <li>Basic Programming</li><li>Problem solving</li><li>Technical documentation</li><li>Time management</li>
+            </ul>
+        </div>
+
+        <div class="ab-group">
+            <span class="ab-label">Hobbies</span>
+            <ul class="ab-chips">
+                <li>Driving</li><li>Movies</li><li>Piano</li><li>Painting</li>
+            </ul>
+        </div>
+    </section>
+
 </main>
 
-<a class="previous-page" href="index.html">← Home</a>
-
-<a class="next-page" href="achievements.html">
-    Next
-    <span>→</span>
-</a>
-
 <script src="script.js"></script>
+<script>
+/* shows the "Blurred ID here" marker only while a picture is missing */
+document.querySelectorAll('.id-frame').forEach((frame) => {
+  const img = frame.querySelector('img');
+  const check = () => frame.classList.toggle('is-empty', !img.naturalWidth);
+  if (img.complete) check();
+  else { img.addEventListener('load', check); img.addEventListener('error', check); }
+});
+</script>
+<script src="sounds.js"></script>
 </body>
 </html>
