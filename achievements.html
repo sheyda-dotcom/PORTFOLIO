@@ -18,35 +18,107 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 }
 
 .ac-page {
+  --g: clamp(.5rem, 1vw, 1rem);
   position: fixed;
   inset: 0;
   z-index: 2;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: .6rem;
+  gap: .7rem;
   padding: 4.4rem min(3vw, 2.5rem) 3.9rem;
   overflow: hidden;
 }
 
-/* ---- top school timeline ---- */
-.ac-timeline { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: clamp(.6rem, 2vw, 1.8rem); }
-.ac-step { display: flex; align-items: center; gap: .6rem; }
+/* ===== TIMELINE (the highlight): one step above each column, joined by a glowing line ===== */
+.ac-timeline {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--g);
+  padding: .2rem 0 .1rem;
+}
+.ac-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.5rem, .9vw, .9rem);
+  padding-top: clamp(1.3rem, 3.2vh, 1.9rem);
+  text-align: left;
+  min-width: 0;
+}
+/* the glowing line, joined between neighbours */
+.ac-step::before {
+  content: "";
+  position: absolute;
+  top: calc(.55rem - 2px);
+  left: calc(var(--g) / -2);
+  right: calc(var(--g) / -2);
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #ff2d3d, #ff5b6b);
+  box-shadow: 0 0 14px rgba(255, 45, 61, .75);
+}
+.ac-step:first-child::before { left: 50%; }
+.ac-step.current::before { right: 50%; background: linear-gradient(90deg, #ff2d3d, #79e5a3); }
+/* dot on the line */
+.ac-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-left: -.55rem;
+  z-index: 1;
+  border-radius: 50%;
+  background: #1a0509;
+  border: 3px solid #ff2d3d;
+  box-shadow: 0 0 14px rgba(255, 45, 61, .9);
+}
+.ac-step.current .ac-dot {
+  background: #79e5a3;
+  border-color: #79e5a3;
+  animation: ac-pulse 2s ease-in-out infinite;
+}
+@keyframes ac-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(121, 229, 163, .7), 0 0 0 0 rgba(121, 229, 163, .5); }
+  50%      { box-shadow: 0 0 18px rgba(121, 229, 163, .9), 0 0 0 .6rem rgba(121, 229, 163, 0); }
+}
+
 .ac-logo {
   flex: 0 0 auto;
-  width: clamp(2.2rem, 5.4vh, 3.4rem);
-  height: clamp(2.2rem, 5.4vh, 3.4rem);
+  width: clamp(2.8rem, 8vh, 4.6rem);
+  height: clamp(2.8rem, 8vh, 4.6rem);
   display: grid; place-items: center; overflow: hidden;
-  border-radius: 14px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 80, 90, .4);
-  box-shadow: 0 0 18px rgba(255, 45, 61, .2);
+  border: 1px solid rgba(255, 90, 105, .6);
+  box-shadow: 0 0 24px rgba(255, 45, 61, .35);
 }
 .ac-logo img { width: 100%; height: 100%; padding: 4px; object-fit: contain; }
-.ac-step b { display: block; font-size: clamp(.66rem, 1.5vh, .86rem); color: #fff4f5; line-height: 1.15; }
-.ac-step span { display: block; font: 500 clamp(.55rem, 1.3vh, .72rem) "DM Mono", monospace; letter-spacing: .1em; color: #f27a8b; text-transform: uppercase; }
-.ac-step.current span { color: #79e5a3; }
-.ac-line { flex: 0 1 clamp(2rem, 8vw, 7rem); height: 2px; background: linear-gradient(90deg, rgba(255,45,61,.9), rgba(255,45,61,.15)); box-shadow: 0 0 10px rgba(255, 45, 61, .5); }
+
+.ac-txt { min-width: 0; }
+.ac-txt b {
+  display: block;
+  color: #fff4f5;
+  line-height: 1.15;
+  font-size: clamp(.78rem, 2vh, 1.1rem);
+}
+.ac-txt span {
+  display: inline-block;
+  margin-top: .25rem;
+  padding: .15rem .6rem;
+  font: 500 clamp(.52rem, 1.3vh, .72rem) "DM Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #ffb3b9;
+  background: rgba(255, 45, 61, .14);
+  border: 1px solid rgba(255, 90, 105, .4);
+  border-radius: 999px;
+}
+.ac-step.current .ac-txt span { color: #0b2a17; background: #79e5a3; border-color: #79e5a3; }
 
 /* ---- grid: 5 shared rows so everything lines up across cards 1-3 ---- */
 .ac-grid {
@@ -55,7 +127,7 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-template-rows: auto minmax(0, 1.95fr) minmax(0, .8fr) minmax(0, 1.02fr) minmax(0, 1.02fr);
-  column-gap: clamp(.5rem, 1vw, 1rem);
+  column-gap: var(--g);
   row-gap: .4rem;
 }
 .ac-card {
@@ -73,10 +145,8 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 }
 .ac-card.milestones { display: flex; flex-direction: column; gap: .4rem; }
 
-.ac-head { grid-row: 1; display: flex; align-items: center; gap: .55rem; padding-bottom: .35rem; border-bottom: 1px solid rgba(255,255,255,.13); }
-.ac-head .ac-logo { width: clamp(2rem, 4.6vh, 2.8rem); height: clamp(2rem, 4.6vh, 2.8rem); border-radius: 11px; }
-.ac-head b { display: block; font-size: clamp(.66rem, 1.5vh, .86rem); color: #fff4f5; line-height: 1.15; }
-.ac-head span { font: 500 clamp(.55rem, 1.25vh, .7rem) "DM Mono", monospace; letter-spacing: .1em; color: #f27a8b; }
+/* school names now live in the timeline, so the cards give that room to content */
+.ac-card > .ac-head { display: none; }
 
 .ac-title { flex: 0 0 auto; margin: 0; font-size: clamp(.95rem, 2.5vh, 1.35rem); letter-spacing: -.03em; color: #fff; border-bottom: 1px solid rgba(255,255,255,.13); padding-bottom: .3rem; }
 .ac-title span { color: #ed334c; }
@@ -154,8 +224,8 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 @media (max-width: 900px), (max-height: 520px) {
   html, body { height: auto; overflow-x: hidden; overflow-y: auto; }
   .ac-page { position: relative; inset: auto; padding: 5.2rem 1rem 5rem; overflow: visible; }
-  .ac-timeline { flex-wrap: wrap; }
-  .ac-line { display: none; }
+  .ac-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: .8rem; }
+  .ac-step::before { display: none; }
   .ac-grid { display: flex; flex-direction: column; gap: 1rem; }
   .ac-card { display: flex; flex-direction: column; gap: .6rem; padding: 1rem; }
   .ac-fig { height: 62vw; flex: none; }
@@ -165,6 +235,76 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   .ac-side.multi { grid-template-rows: auto; height: auto; }
   .ac-side.multi > .ac-fig.post { grid-row: 2; height: 40vw; }
   .ac-side.multi > .ac-fig, .ac-side.multi > .ac-list { grid-row: 1; }
+}
+
+/* ===== INTRO ANIMATION: timeline first, glow travels along it, each card fades up as the glow reaches its step ===== */
+/* timing of each step: --st fade-in of the step, --t / --d glow sweep start + length, --dt moment the glow hits the dot */
+.ac-step:nth-child(1) { --st: 0s;  --t: .5s;  --d: .4s;  --dt: .5s;  }
+.ac-step:nth-child(2) { --st: .1s; --t: .9s;  --d: .8s;  --dt: 1.3s; }
+.ac-step:nth-child(3) { --st: .2s; --t: 1.7s; --d: .8s;  --dt: 2.1s; }
+.ac-step:nth-child(4) { --st: .3s; --t: 2.5s; --d: .45s; --dt: 2.95s; }
+.ac-grid > .ac-card:nth-child(1) { --ct: .5s; }
+.ac-grid > .ac-card:nth-child(2) { --ct: 1.3s; }
+.ac-grid > .ac-card:nth-child(3) { --ct: 2.1s; }
+.ac-grid > .ac-card:nth-child(4) { --ct: 2.95s; }
+
+/* 1. timeline steps appear first */
+.ac-step {
+  opacity: 0;
+  animation: ac-step-in .6s cubic-bezier(.2, .7, .2, 1) var(--st) forwards;
+}
+@keyframes ac-step-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* 2. a dim track is always there; the glowing line draws over it */
+.ac-step::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(.55rem - 2px);
+  left: calc(var(--g) / -2);
+  right: calc(var(--g) / -2);
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .08);
+}
+.ac-step:first-child::after { left: 50%; }
+.ac-step.current::after { right: 50%; }
+.ac-step::before {
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+  animation: ac-draw var(--d) linear var(--t) forwards;
+}
+@keyframes ac-draw { to { transform: scaleX(1); } }
+
+/* each dot lights up the moment the glow reaches it */
+.ac-dot {
+  opacity: .25;
+  transform: scale(.7);
+  animation: ac-dot-on .5s cubic-bezier(.2, .8, .3, 1.4) var(--dt) forwards;
+}
+.ac-step.current .ac-dot {
+  animation: ac-dot-on .5s cubic-bezier(.2, .8, .3, 1.4) var(--dt) forwards,
+             ac-pulse 2s ease-in-out calc(var(--dt) + .5s) infinite;
+}
+@keyframes ac-dot-on { to { opacity: 1; transform: scale(1); } }
+
+/* 3. each card fades up as the glow reaches its step */
+.ac-grid > .ac-card {
+  opacity: 0;
+  transform: translateY(26px);
+  will-change: transform, opacity;
+  animation: ac-card-in .75s cubic-bezier(.2, .7, .2, 1) var(--ct) forwards;
+}
+@keyframes ac-card-in { to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px), (max-height: 520px) {
+  .ac-step::after { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-step, .ac-dot, .ac-grid > .ac-card { animation: none; opacity: 1; transform: none; }
+  .ac-step::before { animation: none; transform: none; }
 }
 
 /* Back / Next buttons hidden on this page */
@@ -189,20 +329,27 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 
 <main class="ac-page">
 
+  <!-- ============ TIMELINE ============ -->
   <div class="ac-timeline">
     <div class="ac-step">
+      <span class="ac-dot"></span>
       <div class="ac-logo"><img src="assets/aes-logo.png" alt="Abatan Elementary School logo" /></div>
-      <div><b>Abatan Elementary School</b><span>2020</span></div>
+      <div class="ac-txt"><b>Abatan Elementary School</b><span>Elementary · 2014 – 2020</span></div>
     </div>
-    <div class="ac-line"></div>
     <div class="ac-step">
+      <span class="ac-dot"></span>
       <div class="ac-logo"><img src="assets/gnhs-logo.png" alt="Guinzadan National High School logo" /></div>
-      <div><b>Guinzadan National High School</b><span>2026</span></div>
+      <div class="ac-txt"><b>Guinzadan National High School</b><span>Junior High · 2020 – 2024</span></div>
     </div>
-    <div class="ac-line"></div>
+    <div class="ac-step">
+      <span class="ac-dot"></span>
+      <div class="ac-logo"><img src="assets/gnhs-logo.png" alt="Guinzadan National High School logo" /></div>
+      <div class="ac-txt"><b>Guinzadan National High School</b><span>Senior High · 2024 – 2026</span></div>
+    </div>
     <div class="ac-step current">
+      <span class="ac-dot"></span>
       <div class="ac-logo"><img src="assets/uc-logo.png" alt="University of the Cordilleras logo" /></div>
-      <div><b>University of the Cordilleras</b><span>● Current BS Computer Science</span></div>
+      <div class="ac-txt"><b>University of the Cordilleras</b><span>● BS Computer Science · 2026 – Now</span></div>
     </div>
   </div>
 
@@ -289,8 +436,6 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 
   </div>
 </main>
-
-
 
 <script>
 /* hover preview: grows from the picture's own spot, smooth in and out */

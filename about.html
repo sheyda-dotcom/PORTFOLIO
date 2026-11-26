@@ -27,10 +27,11 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
   padding: .25rem 4vw 2.4rem;
   display: grid;
   grid-template-columns: minmax(0, .95fr) repeat(3, minmax(0, 1fr));
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   --val: clamp(.86rem, 2.1vh, 1.25rem);       /* the size used for ALL the information values */
   grid-template-areas:
     "profile background physical  physical"
+    "profile medical    medical   medical"
     "profile education  parents   emergency"
     "profile ids        ids       skills";
   gap: clamp(.55rem, 1.5vh, 1.1rem);
@@ -60,8 +61,9 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
 .b-education  { grid-area: education;  animation-delay: .35s; }
 .b-parents    { grid-area: parents;    animation-delay: .45s; }
 .b-emergency  { grid-area: emergency;  animation-delay: .55s; }
-.b-ids        { grid-area: ids;        animation-delay: .65s; }
+.b-medical    { grid-area: medical;    animation-delay: .65s; }
 .b-skills     { grid-area: skills;     animation-delay: .75s; }
+.b-ids        { grid-area: ids;        animation-delay: .85s; }
 @keyframes ab-in { to { opacity: 1; transform: none; } }
 
 .ab-box > h3 {
@@ -170,7 +172,10 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
 .ab-rows.two    { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ab-rows.twelve { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 .ab-row { min-width: 0; }
+.ab-row.s2 { grid-column: span 2; }
 .ab-row.s3 { grid-column: span 3; }
+.ab-row.s4 { grid-column: span 4; }
+.ab-row.s6 { grid-column: span 6; }
 .ab-row.s9 { grid-column: span 9; }
 .ab-row.wide { grid-column: 1 / -1; }
 .ab-row dt { margin: 0; }
@@ -201,8 +206,8 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
 }
 
 /* cards with spare room: rows spread apart, so lines never stick together */
-.b-physical, .b-background, .b-education { display: flex; flex-direction: column; }
-.b-physical .ab-rows, .b-background .ab-rows, .b-education .ab-rows { flex: 1; align-content: space-between; }
+.b-physical, .b-background, .b-education, .b-medical { display: flex; flex-direction: column; }
+.b-physical .ab-rows, .b-background .ab-rows, .b-education .ab-rows, .b-medical .ab-rows { flex: 1; align-content: space-between; }
 
 /* ---------- skills & hobbies ---------- */
 .b-skills { display: flex; flex-direction: column; }
@@ -338,18 +343,19 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
     padding: 6.2rem 1rem 6.5rem;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
-    grid-template-areas: "profile" "background" "physical" "education" "parents" "emergency" "skills" "ids";
+    grid-template-areas: "profile" "background" "physical" "medical" "education" "parents" "emergency" "skills" "ids";
     overflow: visible;
   }
   .ab-box { overflow: visible; padding: 1.1rem; }
   .ab-photo { width: min(50vw, 210px); }
   .ab-rows.twelve { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ab-row.s3, .ab-row.s9 { grid-column: auto; }
-  .ab-row.s9 { grid-column: 1 / -1; }
+  .ab-row.s3, .ab-row.s4, .ab-row.s6, .ab-row.s9 { grid-column: auto; }
+  .ab-row.s9, .ab-row.s6 { grid-column: 1 / -1; }
   .id-row { flex-direction: column; }
   .id-frame { height: auto; width: min(100%, 320px); }
 }
-/* About: size the top cards and profile so Valid IDs and Skills & Hobbies keep their original look */
+
+/* About: size the top cards and profile so everything fits on one screen */
 .ab-page {
   --val: clamp(.8rem, 1.85vh, 1.12rem);
   gap: clamp(.4rem, 1.1vh, .9rem);
@@ -375,6 +381,28 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
 .ab-basics {
   gap: clamp(.6rem, 2.2vh, 1.5rem) .8rem;
 }
+
+/* Emergency Contact: shrinks from the bottom instead of stretching; Parents tighter so the row is shorter */
+.b-emergency { align-self: start; }
+.b-parents .ab-people { gap: clamp(.2rem, .6vh, .4rem); }
+.b-parents .ab-person { padding: clamp(.2rem, .55vh, .45rem) clamp(.6rem, .9vw, 1rem); }
+.b-parents .ab-person h4 { margin-top: .1rem; }
+
+/* Skills & Hobbies: tighter chips so the hobbies are never cut */
+.b-skills .ab-group + .ab-group { margin-top: clamp(.3rem, .9vh, .6rem); }
+.b-skills .ab-group .ab-chips { margin-top: .25rem; gap: clamp(.2rem, .6vh, .35rem); }
+.b-skills .ab-chips li { padding: .12em .7em; font-size: clamp(.64rem, 1.45vh, .9rem); }
+
+/* Medical: seven items in one row */
+.ab-rows.seven { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+@media (max-width: 900px) { .ab-rows.seven { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Medical: one compact row, no stretched empty space */
+.b-medical .ab-rows { flex: none; align-content: start; }
+
+/* Valid IDs: same look and place as before (bottom, beside Skills), just a little smaller */
+.id-frame { height: clamp(4.5rem, 12.5vh, 10rem); }
+.ab-photo { width: min(14vw, 20vh); }
 </style>
 </head>
 <body>
@@ -405,21 +433,18 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
         <h2 class="ab-hello">Hello, I’m<span>Sheyda Lapawen Palpal</span></h2>
 
         <div class="ab-basics">
-    <div><span class="ab-label">Date of Birth</span><p>April 16, 2008</p></div>
-    <div><span class="ab-label">Age &amp; Sex</span><p>18 · Female</p></div>
-    <div><span class="ab-label">Location</span><p>Baguio City, PH</p></div>
-    <div><span class="ab-label">Status</span><p>Single</p></div>
-    <div><span class="ab-label">Disabilities</span><p>None</p></div>
-    <div><span class="ab-label">Zodiac Sign</span><p>Aries</p></div>
-    <div style="grid-column: 1 / -1;"><span class="ab-label">Email</span><p><a href="mailto:palpalsheyda@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;">palpalsheyda@gmail.com</a></p></div>
-</div>
-
-        <div class="ab-about">
-            
-            <p class="ab-bio">First-year BS Computer Science student at the University of the Cordilleras with a background in Accountancy, Business, and Management (ABM), I bring both technical and business perspectives to my work.</p>
+            <div><span class="ab-label">Date of Birth</span><p>April 16, 2008</p></div>
+            <div><span class="ab-label">Age &amp; Sex</span><p>18 · Female</p></div>
+            <div><span class="ab-label">Location</span><p>Baguio City, PH</p></div>
+            <div><span class="ab-label">Status</span><p>Single</p></div>
+            <div><span class="ab-label">No. of Children</span><p>None</p></div>
+            <div><span class="ab-label">Zodiac Sign</span><p>Aries</p></div>
+            <div style="grid-column: 1 / -1;"><span class="ab-label">Email</span><p><a href="mailto:palpalsheyda@gmail.com" style="text-decoration: underline; text-underline-offset: 3px;">palpalsheyda@gmail.com</a></p></div>
         </div>
 
-        
+        <div class="ab-about">
+            <p class="ab-bio">First-year BS Computer Science student at the University of the Cordilleras with a background in Accountancy, Business, and Management (ABM), I bring both technical and business perspectives to my work.</p>
+        </div>
     </section>
 
     <!-- ============ BACKGROUND ============ -->
@@ -446,11 +471,10 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
             <div class="ab-row s3"><dt class="ab-label">Height</dt><dd>142 cm <small>4'7"</small></dd></div>
             <div class="ab-row s3"><dt class="ab-label">Weight</dt><dd>38 kg <small>83.8 lb</small></dd></div>
             <div class="ab-row s3"><dt class="ab-label">BMI Category</dt><dd>Normal</dd></div>
-            <div class="ab-row s3"><dt class="ab-label">Blood Type</dt><dd>A+</dd></div>
+            <div class="ab-row s3"><dt class="ab-label">Skin Tone</dt><dd>Fair</dd></div>
             <div class="ab-row s3"><dt class="ab-label">Eye Color</dt><dd>Brown</dd></div>
             <div class="ab-row s3"><dt class="ab-label">Hair Color</dt><dd>Dark brown</dd></div>
-            <div class="ab-row" style="grid-column: span 6;"><dt class="ab-label">Allergies</dt><dd>Crustacean shellfish</dd></div>
-            <div class="ab-row wide"><dt class="ab-label">Distinguishing Marks</dt><dd>Moles on left cheekbone, chin, right cheek · Birthmark on upper thigh</dd></div>
+            <div class="ab-row s6"><dt class="ab-label">Distinguishing Marks</dt><dd>Moles on left cheekbone, chin, right cheek · Birthmark on upper thigh</dd></div>
         </dl>
     </section>
 
@@ -491,12 +515,45 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
         </div>
     </section>
 
+    <!-- ============ MEDICAL ============ -->
+    <section class="ab-box b-medical">
+        <h3>Medical</h3>
+        <dl class="ab-rows seven">
+            <div class="ab-row"><dt class="ab-label">Disabilities</dt><dd>None</dd></div>
+            <div class="ab-row"><dt class="ab-label">Medical Conditions</dt><dd>None</dd></div>
+            <div class="ab-row"><dt class="ab-label">Color Blind</dt><dd>No</dd></div>
+            <div class="ab-row"><dt class="ab-label">Blood Type</dt><dd>A+</dd></div>
+            <div class="ab-row"><dt class="ab-label">Allergies</dt><dd>Crustacean shellfish</dd></div>
+            <div class="ab-row"><dt class="ab-label">Visual Acuity</dt><dd>L&nbsp;&nbsp;&nbsp;20/30<br>R&nbsp;&nbsp;&nbsp;20/20</dd></div>
+            <div class="ab-row"><dt class="ab-label">Hearing</dt><dd>L&nbsp;&nbsp;&nbsp;Normal<br>R&nbsp;&nbsp;&nbsp;Normal</dd></div>
+        </dl>
+    </section>
+
+    <!-- ============ SKILLS & HOBBIES ============ -->
+    <section class="ab-box b-skills">
+        <h3>Skills &amp; Hobbies</h3>
+
+        <div class="ab-group">
+            <span class="ab-label">Skills</span>
+            <ul class="ab-chips">
+                <li>Basic Programming</li><li>Problem solving</li><li>Technical documentation</li><li>Time management</li>
+            </ul>
+        </div>
+
+        <div class="ab-group">
+            <span class="ab-label">Hobbies</span>
+            <ul class="ab-chips">
+                <li>Driving</li><li>Movies</li><li>Piano</li><li>Painting</li>
+            </ul>
+        </div>
+    </section>
+
     <!-- ============ VALID IDs ============ -->
     <section class="ab-box b-ids">
         <h3>Valid IDs</h3>
 
         <div class="id-row">
-            <!-- ▼ put each blurred ID in assets/ with these file names, and rename the captions to the ID type -->
+            <!-- put each blurred ID in assets/ with these file names, and rename the captions to the ID type -->
             <figure class="id-item">
                 <div class="id-frame">
                     <img src="assets/id1.jpg" alt="Valid ID 1 (blurred)" />
@@ -527,25 +584,6 @@ html, body { height: 100%; margin: 0; overflow: hidden; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
             <span>ID images and full numbers are withheld in compliance with RA 10173 (Data Privacy Act of 2012).</span>
         </p>
-    </section>
-
-    <!-- ============ SKILLS & HOBBIES ============ -->
-    <section class="ab-box b-skills">
-        <h3>Skills &amp; Hobbies</h3>
-
-        <div class="ab-group">
-            <span class="ab-label">Skills</span>
-            <ul class="ab-chips">
-                <li>Basic Programming</li><li>Problem solving</li><li>Technical documentation</li><li>Time management</li>
-            </ul>
-        </div>
-
-        <div class="ab-group">
-            <span class="ab-label">Hobbies</span>
-            <ul class="ab-chips">
-                <li>Driving</li><li>Movies</li><li>Piano</li><li>Painting</li>
-            </ul>
-        </div>
     </section>
 
 </main>
